@@ -1,6 +1,7 @@
 # Python and React: MySure Insurance Sample Application
 
-### Github repo: MySureSampleApp
+### GitHub repo: sample-app-mysure-python
+Visit [MySure sample application](https://mysuresample.esigndemos.com/) on DoucSign to see this code publicly hosted
 
 ## Introduction
 MySuresample application written in Python 3.7 (server) and React (client). You can find a live instance running at [https://mysuresample.esigndemos.com/](https://mysuresample.esigndemos.com/).
