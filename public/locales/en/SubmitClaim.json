@@ -1,7 +1,7 @@
 {
   "Title": "Submit a Claim",
   "FirstName": "First name:",
-  "LastName": "Last n:ame",
+  "LastName": "Last name:",
   "Email": "Email:",
   "SubmitButton": "Submit a Claim",
   "SubmitButtonClicked": "Requesting...",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import image1 from "../../assets/img/img-01.svg";
 import image2 from "../../assets/img/img-02.svg";
@@ -6,8 +6,33 @@ import image3 from "../../assets/img/img-03.svg";
 import background from "../../assets/img/img-04.jpg";
 import { useTranslation } from "react-i18next";
 import parse from "html-react-parser";
+import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
+import ModalContext from "../../contexts/modal/modal.context";
+import { checkPayment } from "../../api/auth";
+import history from "../../api/history";
+
 export const Home = () => {
   const { t } = useTranslation("Home");
+  const { logged, setRedirectUrl, setShowJWTModal, authType } = useContext(LoggedUserContext);
+  const { setModalShow } = useContext(ModalContext);
+
+  function handleClick(event, redirectUrl) {
+    event.preventDefault();
+    setModalShow(true);
+    setRedirectUrl(redirectUrl);
+  }
+
+  async function handlePayment(event, redirectUrl) {
+    event.preventDefault()
+    if (authType === "code_grant"){
+      const response = await checkPayment(setShowJWTModal)
+      if (response.status === 200) {
+        history.push(redirectUrl);
+      }
+    } else {
+      history.push(redirectUrl);
+    }
+  }
 
   return (
     <>
@@ -37,11 +62,18 @@ export const Home = () => {
                   {parse(t("Card1.Description"))}
                 </span>
                 <div className="card-info-button-holder">
-                  <Link to="/submitClaim">
-                    <button className="btn btn-success">
-                      {t("Card1.Button")}
+                  {logged ?
+                    <Link to="/submitClaim">
+                      <button className="btn btn-success">
+                        {t("Card1.Button")}
+                      </button>
+                    </Link>
+                    :
+                    <button className="btn btn-success" 
+                    onClick={(event) => handleClick(event, "/submitClaim")}>
+                        {t("Card1.Button")}
                     </button>
-                  </Link>
+                  }
                 </div>
                 <div className="card-info-list">
                   {parse(t("Card1.Features"))}
@@ -58,11 +90,18 @@ export const Home = () => {
                   {parse(t("Card2.Description"))}
                 </span>
                 <div className="card-info-button-holder">
-                  <Link to="/requestAutoRenewal">
-                    <button className="btn btn-success">
-                      {t("Card2.Button")}
+                  {logged ?
+                    <Link to="/requestAutoRenewal">
+                      <button className="btn btn-success">
+                        {t("Card2.Button")}
+                      </button>
+                    </Link>
+                    :
+                    <button className="btn btn-success" 
+                    onClick={(event) => handleClick(event, "/requestAutoRenewal")}>
+                        {t("Card1.Button")}
                     </button>
-                  </Link>
+                  }
                 </div>
                 <div className="card-info-list">
                   {parse(t("Card2.Features"))}
@@ -79,11 +118,17 @@ export const Home = () => {
                   {parse(t("Card3.Description"))}
                 </span>
                 <div className="card-info-button-holder">
-                  <Link to="/byNewInsurance">
-                    <button className="btn btn-success">
+                  {logged ?
+                    <button className="btn btn-success" 
+                      onClick={(event) => handlePayment(event, "/byNewInsurance")}>
                       {t("Card3.Button")}
                     </button>
-                  </Link>
+                    :
+                    <button className="btn btn-success" 
+                      onClick={(event) => handleClick(event, "/byNewInsurance")}>
+                          {t("Card1.Button")}
+                    </button>
+                  }
                 </div>
                 <div className="card-info-list">
                   {parse(t("Card3.Features"))}

@@ -1,6 +1,5 @@
 *.pyc
 .idea
-.env
 
 # pyenv
 .python-version

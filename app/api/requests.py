@@ -2,7 +2,7 @@ from docusign_esign import ApiException
 from flask import Blueprint, jsonify, request, session
 from flask_cors import cross_origin
 
-from app.api.utils import process_error
+from app.api.utils import process_error, check_token
 from app.document import DsDocument
 from app.ds_config import DsConfig
 from app.envelope import Envelope
@@ -12,6 +12,7 @@ requests = Blueprint('requests', __name__)
 
 @requests.route('/requests/claim', methods=['POST'])
 @cross_origin(supports_credentials=True)
+@check_token
 def submit_claim():
     """Submit a claim"""
     try:
@@ -45,12 +46,14 @@ def submit_claim():
 
 @requests.route('/requests/newinsurance', methods=['POST'])
 @cross_origin(supports_credentials=True)
+@check_token
 def buy_new_insurance():
     """Request for the purchase of a new insurance"""
     try:
         req_json = request.get_json(force=True)
         insurance_info = req_json['insurance']
         user = req_json['user']
+
         envelope_args = {
             'signer_client_id': 1000,
             'ds_return_url': req_json['callback-url'],
@@ -104,6 +107,7 @@ def envelope_list():
 
 @requests.route('/requests/download', methods=['GET'])
 @cross_origin(supports_credentials=True)
+@check_token
 def envelope_download():
     """Request for document download from the envelope"""
     try:

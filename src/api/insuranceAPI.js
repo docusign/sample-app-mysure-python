@@ -1,7 +1,7 @@
 import axios from "./interceptors";
 import { handleResponse, handleError } from "./apiHelper";
 
-export async function buyNewInsurance(request) {
+export async function buyNewInsurance(request, setShowJWTModal) {
   try {
     const response = await axios.post(
       process.env.REACT_APP_API_BASE_URL + "/requests/newinsurance",
@@ -12,7 +12,7 @@ export async function buyNewInsurance(request) {
     );
     return handleResponse(response);
   } catch (error) {
-    handleError(error);
+    handleError(error, setShowJWTModal);
   }
 }
 

@@ -16,7 +16,9 @@ i18n
       "History",
       "SigningComplete",
       "SubmitClaim",
-      "RequestAutoRenewal"
+      "RequestAutoRenewal",
+      "Modal",
+      "JWTModal"
     ],
     transKeepBasicHtmlNodesFor: ["h3", "h4", "strong", "i", "p"],
     keySeparator: ".",

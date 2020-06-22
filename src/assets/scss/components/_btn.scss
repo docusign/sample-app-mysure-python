@@ -30,5 +30,10 @@
       border-color: #d1d1d1 !important;
       color: #d1d1d1 !important;
     }
+
+    &.nav-btn {
+      margin: 0.9rem;
+      min-width: 100px;
+    }
   }
 }

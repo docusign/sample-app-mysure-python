@@ -1,10 +1,12 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { RequestForm } from "./components/RequestForm";
 import { ApiDescription } from "./components/ApiDescription";
 import { reducer } from "./requestReducer";
 import * as api from "../../api/insuranceAPI";
 import * as Actions from "./actionTypes";
+import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
+import { checkUnlogged } from "../../api/auth";
 
 const initialState = {
   errors: [],
@@ -20,7 +22,13 @@ export const RequestAutoRenewal = () => {
   const { t } = useTranslation("RequestAutoRenewal");
   const [state, dispatch] = useReducer(reducer, initialState);
   const [request, setRequestData] = useState({ ...initialState.request });
+  const [requesting, setRequesting] = useState(false);
   const [errors, setErrors] = useState({});
+  const { logged, setLogged, setAuthType } = useContext(LoggedUserContext);
+
+  useEffect(() => {
+    checkUnlogged(logged, setLogged, setAuthType);
+  }, [])
 
   async function handleSave(event) {
     event.preventDefault();
@@ -34,6 +42,7 @@ export const RequestAutoRenewal = () => {
       "display-name": t("Renewal.DisplayName"),
       "terms-renewal": t("Renewal.TermsRenewal")
     };
+    setRequesting(true);
     try {
       const response = await api.getCliwrapForRequestRenewal(body);
       dispatch({
@@ -50,7 +59,8 @@ export const RequestAutoRenewal = () => {
         false
       );
     } catch (error) {
-      throw error;
+      setErrors({ ...errors, onSave: error.message });
+      setRequesting(false);
     }
   }
 
@@ -96,6 +106,7 @@ export const RequestAutoRenewal = () => {
       <div className="row">
         <RequestForm
           request={request}
+          requesting={requesting}
           onChange={handleChange}
           onSave={handleSave}
           errors={errors}

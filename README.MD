@@ -1,7 +1,6 @@
 # Python and React: MySure Insurance Sample Application
 
-### GitHub repo: sample-app-mysure-python
-Visit [MySure sample application](https://mysuresample.esigndemos.com/) on DoucSign to see this code publicly hosted
+### Github repo: MySureSampleApp
 
 ## Introduction
 MySuresample application written in Python 3.7 (server) and React (client). You can find a live instance running at [https://mysuresample.esigndemos.com/](https://mysuresample.esigndemos.com/).
@@ -30,7 +29,6 @@ MySure demonstrates the following:
 ## Installation
 
 ### Prerequisites
-
 * A DocuSign Developer Sandbox account (email and password) on [demo.docusign.net](https://demo.docusign.net). If you don't already have a developer sandbox, create a [free account](https://go.docusign.com/sandbox/productshot/?elqCampaignId=16535).
 * A DocuSign integration key (a client ID) that is configured to use **JSON Web Token (JWT) Grant**.
    You will need the **integration key** itself and its **RSA key pair**. To use this application, you must add your application's **Redirect URI** to your integration key. This [**video**](https://www.youtube.com/watch?v=GgDqa7-L0yo) demonstrates how to create an integration key (client ID) for a user application like this example. 
@@ -41,6 +39,7 @@ MySure demonstrates the following:
 ### Required environment variables
 
 * **DS_CLIENT_ID** - The integration key is the same as the client ID
+* **DS_CLIENT_SECRET** - Integration Secret Key
 * **DS_IMPERSONATED_USER_GUID** - API account ID
 * **DS_TARGET_ACCOUNT_ID** - Target account ID. Use FALSE to indicate the user's default
 * **DS_PAYMENT_GATEWAY_ID** - Payment gateway ID (Only Stripe method supported)

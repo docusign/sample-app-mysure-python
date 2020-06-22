@@ -10,6 +10,7 @@ $gray-100: #f8f9fa !default;
 $gray-200: #FAFAFA ;
 $gray-300: #f0f0f0;
 $gray-400: #E9E9E9;
+$gray-450: #ADADAD;
 $gray-500: #4e4e4f;
 $gray-600: #323232;
 $gray-700: #495057 !default;
@@ -471,7 +472,7 @@ $label-margin-bottom:                  0.8125rem;
 //$input-disabled-bg:                     $gray-200 !default;
 //
 //$input-color:                           $gray-700 !default;
-$input-border-color:                    $gray-400;
+$input-border-color:                    $gray-450;
 //$input-border-width:                    $input-btn-border-width !default;
 //$input-box-shadow:                      inset 0 1px 1px rgba($black, .075) !default;
 //
@@ -480,7 +481,7 @@ $input-border-radius:                   6px;
 //$input-border-radius-sm:                $border-radius-sm !default;
 //
 //$input-focus-bg:                        $input-bg !default;
-$input-focus-border-color:              $gray-300;
+$input-focus-border-color:              $gray-400;
 //$input-focus-color:                     $input-color !default;
 //$input-focus-width:                     $input-btn-focus-width !default;
 $input-focus-box-shadow:                none!important;

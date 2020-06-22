@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect, useContext } from "react";
 import { RequestForm } from "./components/RequestForm";
 import { ApiDescription } from "./components/ApiDescription";
 import { Frame } from "../../components/Frame.js";
@@ -6,6 +6,8 @@ import { reducer } from "./requestReducer";
 import * as api from "../../api/insuranceAPI";
 import { SEND_REQEUST_SUCCESS } from "./actionTypes";
 import { useTranslation } from "react-i18next";
+import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
+import { checkUnlogged } from "../../api/auth";
 
 const initialState = {
   errors: [],
@@ -33,6 +35,11 @@ export const BuyNewInsurance = () => {
   const [request, setRequestData] = useState({ ...initialState.request });
   const [requesting, setRequesting] = useState(false);
   const [errors, setErrors] = useState({});
+  const { logged, setLogged, setAuthType, setShowJWTModal } = useContext(LoggedUserContext);
+
+  useEffect(() => {
+    checkUnlogged(logged, setLogged, setAuthType);
+  }, [])
 
   async function handleSave(event) {
     event.preventDefault();
@@ -64,7 +71,7 @@ export const BuyNewInsurance = () => {
     setRequesting(true);
 
     try {
-      const savedRequest = await api.buyNewInsurance(body);
+      const savedRequest = await api.buyNewInsurance(body, setShowJWTModal);
       dispatch({
         type: SEND_REQEUST_SUCCESS,
         payload: {
