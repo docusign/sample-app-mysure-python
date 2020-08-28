@@ -18,7 +18,6 @@ def insurance_renewal():
             req_json = request.get_json(force=True)
             clickwrap_args = {
                 'terms_name': req_json['terms-name'],
-                'terms_renewal': req_json['terms-renewal'],
                 'display_name': req_json['display-name'],
             }
         except TypeError:
