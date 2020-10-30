@@ -4,8 +4,8 @@
   "BackLink": "Back to Home",
   "StatusLink": "View My Submissions",
   "SandboxText": "<h4>Get Started with the DocuSign APIs Today</h4>",
-  "SandboxButton": "Get Your Sandbox",
-  "Description": "<p>  <br></br>With a developer sandbox, you can test our APIs for free. Sandbox accounts do not expire and have enterprise-level features enabled.</p>",
+  "SandboxButton": "Get Your Developer Account",
+  "Description": "<p>  <br></br>With a developer account, you can test our APIs for free. Developer accounts do not expire and have enterprise-level features enabled.</p>",
   "SigningReturnEvents": "Possible signing return events:",
   "LearnAbout": "Learn more about embedded signing",
   "SigningCompleteEvent": {
