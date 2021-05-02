@@ -3,7 +3,7 @@
 ### Github repo: MySureSampleApp
 
 ## Introduction
-MySuresample application written in Python 3.7 (server) and React (client). You can find a live instance running at [https://mysuresample.esigndemos.com/](https://mysuresample.esigndemos.com/).
+MySuresample application written in Python 3.7 (server) and React (client). You can find a live instance running at [https://mysure.sampleapps.docusign.com/](https://mysure.sampleapps.docusign.com/).
 
 MySure demonstrates the following:
 
