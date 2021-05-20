@@ -67,7 +67,7 @@ MySure demonstrates the following:
 
 1. Download or clone this repository to your workstation in a new folder named **sample-app-mysure-python**.
 2. Navigate to the scripts subfolder:**`cd sample-app-mysure-python/scripts`**
-3. Run the installation script: **`./install.sh`**
+3. Run the installation script: **`./install.sh`** (`./install.bat` for Windows)
 4. Update the **.env** file with the integration key and other settings.  
     > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
 
