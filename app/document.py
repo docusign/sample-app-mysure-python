@@ -1,15 +1,28 @@
 import base64
 from os import path
 
-from docusign_esign import Recipients, EnvelopeDefinition, Tabs, Email, \
-    InitialHere, SignHere, Signer, Checkbox, FormulaTab, Number, \
-    PaymentDetails, PaymentLineItem, Document, Attachment, SignerAttachment
+from docusign_esign import (
+    Recipients,
+    EnvelopeDefinition,
+    Tabs,
+    Email,
+    InitialHere,
+    SignHere,
+    Signer,
+    Checkbox,
+    FormulaTab,
+    Number,
+    PaymentDetails,
+    PaymentLineItem,
+    Document,
+    SignerAttachment
+)
 from jinja2 import Environment, BaseLoader
 
-from app.const import TPL_PATH, IMG_PATH
+from app.ds_config import TPL_PATH, IMG_PATH
 
 
-class DsDocument:
+class DsDocument: # pylint: disable=too-many-locals
     @classmethod
     def create_claim(cls, tpl, claim, envelope_args):
         """Creates claim document
@@ -266,7 +279,7 @@ class DsDocument:
         # Create payment line item
         payment_line_iteml1 = PaymentLineItem(
             name='Insurance payment',
-            description=f'$[l4t]',
+            description='$[l4t]',
             amount_reference='l4t'
         )
 
