@@ -39,7 +39,7 @@ export const BuyNewInsurance = () => {
 
   useEffect(() => {
     checkUnlogged(logged, setLogged, setAuthType);
-  }, [])
+  })
 
   async function handleSave(event) {
     event.preventDefault();
