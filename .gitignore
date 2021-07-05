@@ -1,9 +1,13 @@
 *.pyc
 .idea
 
+.env
+__pycache__/
+flask_session/
+
 # pyenv
 .python-version
-/venv
+/venv/
 
 # Mac/OSX
 .DS_Store
