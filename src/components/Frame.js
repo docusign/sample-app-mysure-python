@@ -1,7 +1,7 @@
 import React from "react";
 
 export const Frame = ({ src }) => (
-  <iframe
+  <iframe title="unique title"
     src={src}
     style={{
       position: "fixed",

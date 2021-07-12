@@ -1,4 +1,5 @@
 # Config for Flask
 DEBUG = True
 SECRET_KEY = '{SESSION_SECRET}'
-SESSION_TYPE = 'filesystem'
+
+CORS_SUPPORTS_CREDENTIALS = True

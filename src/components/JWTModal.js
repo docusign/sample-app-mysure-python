@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { Modal, Container, Button } from "react-bootstrap";
 import { useTranslation } from "react-i18next";
 import { jwtAuth, getStatus, logOut } from "../api/auth";
-import history from "../api/history";
 import LoggedUserContext from "../contexts/logged-user/logged-user.context";
 import parse from "html-react-parser";
 

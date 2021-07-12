@@ -6,6 +6,7 @@ export const Callback = () => {
     const { setShowAlert, setLogged, setAuthType, setShowJWTModal } = useContext(LoggedUserContext); 
     useEffect(() => {
         completeCallback(setShowAlert, setLogged, setAuthType, setShowJWTModal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
