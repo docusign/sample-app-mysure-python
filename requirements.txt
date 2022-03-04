@@ -2,9 +2,9 @@
 certifi==2021.10.8
 cffi==1.15.0
 chardet==4.0.0
-click==8.0.3
-cryptography==36.0.0
-docusign-esign==3.12.0
+click==8.0.4
+cryptography==36.0.1
+docusign-esign==3.14.0
 Flask==1.1.2
 Flask-Cors==3.0.10
 Flask-Session==0.3.2
