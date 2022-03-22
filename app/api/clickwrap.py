@@ -24,7 +24,7 @@ def insurance_renewal():
     }
 
     try:
-        clickwrap_ = Clickwrap.create(clickwrap_args, session)
+        clickwrap_ = Clickwrap.get(clickwrap_args, session)
     except ApiException as exc:
         return process_error(exc)
     return jsonify(clickwrap=clickwrap_)
