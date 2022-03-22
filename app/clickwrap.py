@@ -36,7 +36,6 @@ class Clickwrap: # pylint: disable=too-few-public-methods
                 'format': 'modal',
                 'hasAccept': True,
                 'mustRead': True,
-                'mustView': True,
                 'requireAccept': True,
                 'size': 'medium',
                 'documentDisplay': 'document',
