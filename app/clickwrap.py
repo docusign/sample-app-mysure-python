@@ -1,5 +1,4 @@
 from app.ds_config import CLICKWRAP_ID
-from app.ds_client import DsClient
 
 class Clickwrap: # pylint: disable=too-few-public-methods
     @staticmethod
