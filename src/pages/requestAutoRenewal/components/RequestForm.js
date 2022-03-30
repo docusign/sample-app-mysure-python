@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 import { ClickWrap } from "./Clickwrap";
 import { LoadClickwrapApi } from "./LoadClickwrapApi";
+import { v4 as uuid } from 'uuid';
 
 export const RequestForm = ({
   request,
@@ -59,11 +60,14 @@ export const RequestForm = ({
             error={errors.email}
           />
           <div id="ds-clickwrap"></div>
-          {clickwrap && clickApiReady && request.email ? (
+          {clickwrap && clickApiReady && request.email && request.firstName && request.lastName ? (
             <ClickWrap
               accountId={clickwrap.accountId}
               clickwrapId={clickwrap.clickwrapId}
-              clientUserId={request.email}
+              clientUserId={uuid()}
+              fullName={`${request.firstName} ${request.lastName}`}
+              email={request.email}
+              date={new Date().toString()}
             />
           ) : null}
           <div id="ds-clickwrap-preview"></div>

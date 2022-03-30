@@ -45,6 +45,7 @@ MySure demonstrates the following:
 * **DS_PAYMENT_GATEWAY_ID** - Payment gateway ID (Only Stripe method supported)
 * **DS_PAYMENT_GATEWAY_NAME** - Payment gateway name
 * **DS_PAYMENT_GATEWAY_DISPLAY_NAME** - Payment gateway display name
+* **CLICKWRAP_ID** - The ID of clickwrap with dynamic content properties
 * **DS_PRIVATE_KEY** - Private key string, source or path; for instance: /app/id_rsa
 * **REACT_APP_DS_RETURN_URL** - URL where the back end of the application is located (If you run it locally, use `http://localhost:3000`)
 * **REACT_APP_API_BASE_URL** - URL where the front end of the application is located; will be used by Docusign to redirect back after signing ceremony (If you run it locally, use `http://localhost:5001/api`)
@@ -62,6 +63,8 @@ MySure demonstrates the following:
 4. Install React dependencies using the [npm](https://www.npmjs.com/) package manager:  **npm install**
 5. Update the **.env** file with the integration key and other settings.  
     > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
+
+    > **Note:** You should add a dynamic content properties to your clickwrap by following this [instruction](https://developers.docusign.com/docs/click-api/click101/customize-clickwrap-fields/) before using it in the sample app.
 
 **Using installation scripts**
 

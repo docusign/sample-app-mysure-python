@@ -48,9 +48,7 @@ export const RequestAutoRenewal = () => {
       dispatch({
         type: Actions.GET_CLICKWRAP_SUCCESS,
         payload: {
-          clickwrap: response.clickwrap,
-          envelopeId: response.envelope_id,
-          redirectUrl: response.redirect_url
+          clickwrap: response.clickwrap
         }
       });
       window.addEventListener(
