@@ -3,6 +3,7 @@ import { List } from "./List";
 import { useTranslation } from "react-i18next";
 import * as studentsAPI from "../../api/insuranceAPI";
 import { download } from "../../api/download";
+import { ApiDescription } from "./components/ApiDescription";
 
 export const History = () => {
   const { t } = useTranslation("History");
@@ -55,17 +56,22 @@ export const History = () => {
   return (
     <section className="container-fluid content-section">
       <h2 className="h2">{t("SubmissionsStatus")}</h2>
-      <div className="table-holder">
-        <table className="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">{t("Subject")}</th>
-              <th scope="col">{t("Applicant")}</th>
-              <th scope="col">{t("Last Updated")}</th>
-            </tr>
-          </thead>
-          <List list={submissionsList} onClick={onClick} />
-        </table>
+      <div class="row justify-content">
+        <div class="col-lg-6">
+          <div className="table-holder">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">{t("Subject")}</th>
+                  <th scope="col">{t("Applicant")}</th>
+                  <th scope="col">{t("Last Updated")}</th>
+                </tr>
+              </thead>
+              <List list={submissionsList} onClick={onClick} />
+            </table>
+          </div>
+        </div>
+        <ApiDescription />
       </div>
     </section>
   );
