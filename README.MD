@@ -63,6 +63,7 @@ MySure demonstrates the following:
 4. Install React dependencies using the [npm](https://www.npmjs.com/) package manager:  **npm install**
 5. Update the **.env** file with the integration key and other settings.  
     > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
+6. Navigate to [the admin demo Apps and Keys page](https://admindemo.docusign.com/authenticate?goTo=appsAndKeys), add the Redirect URI http://localhost:3000/callback and then hit save
 
     > **Note:** You should add a dynamic content properties to your clickwrap by following this [instruction](https://developers.docusign.com/docs/click-api/click101/customize-clickwrap-fields/) before using it in the sample app.
 
@@ -73,6 +74,7 @@ MySure demonstrates the following:
 3. Run the installation script: **`./install.sh`** (`./install.bat` for Windows)
 4. Update the **.env** file with the integration key and other settings.  
     > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
+5. Navigate to [the admin demo Apps and Keys page](https://admindemo.docusign.com/authenticate?goTo=appsAndKeys), add the Redirect URI http://localhost:3000/callback and then hit save
 
 ### Additional installation scripts
 All installation scripts are located in the **scripts** folder.
