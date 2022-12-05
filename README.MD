@@ -19,8 +19,8 @@ MySure demonstrates the following:
    This example shows how to use the Click API to create a clickwrap programmatically, render it in your UI, and and then submit it. It also tracks the submission event and, just after submission, redirects the user to the final page.  
    * [More information about Click API](https://developers.docusign.com/docs/click-api) 
 4. **Purchase a new insurance policy.** [Source](./app/api/requests.py)  
-   The example shows how to [request payment using Docusign](https://www.docusign.com/products/payments). It's implemented using an HTML-based template with [payment tabs](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/payment/). The document also includes different tab types, such as [Formula](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/calculated-fields/) and
-   [Checkbox](https://developers.docusign.com/esign-rest-api/reference/Envelopes/EnvelopeRecipientTabs/).   
+   The example shows how to [request payment using Docusign](https://developers.docusign.com/docs/esign-rest-api/how-to/request-a-payment/). It's implemented using an HTML-based template with [payment tabs](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/payment/). The document also includes different tab types, such as [Formula](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/calculated-fields/) and
+   [Checkbox](https://developers.docusign.com/docs/esign-rest-api/reference/envelopes/enveloperecipienttabs/).   
 
    The document contains additional logic to calculate the total amount. At completion, the user is able to pay the calculated amount and get back to the original website.  
 
