@@ -7,7 +7,7 @@ MySuresample application written in Python 3.7 (server) and React (client). You 
 
 MySure demonstrates the following:
 
-1. Authentication with DocuSign via [JSON Web Token (JWT) Grant](https://developers.docusign.com/esign-rest-api/guides/authentication/oauth2-jsonwebtoken)
+1. Authentication with DocuSign via [JSON Web Token (JWT) Grant](https://developers.docusign.com/platform/auth/jwt/)
 2. **Submit a claim:** [Source](./app/api/requests.py)   
    This example demonstrates an integration for submitting a claim. It allows you to pass data received from the user to fill in a document. It also adds the ability to attach additional information to the document.  
    * The document, based on an HTML template, is combined with Docusign AutoPlace and attachment features.  
@@ -17,9 +17,9 @@ MySure demonstrates the following:
    * [Adding attachments](https://support.docusign.com/en/guides/signer-guide-signing-adding-attachments-new) enables users to add additional information to the document.
 3. **Renew an insurance policy.** [Source](./app/api/clickwrap.py)  
    This example shows how to use the Click API to create a clickwrap programmatically, render it in your UI, and and then submit it. It also tracks the submission event and, just after submission, redirects the user to the final page.  
-   * [More information about Click API](https://developers.docusign.com/click-api) 
+   * [More information about Click API](https://developers.docusign.com/docs/click-api) 
 4. **Purchase a new insurance policy.** [Source](./app/api/requests.py)  
-   The example shows how to [request payment using Docusign](https://www.docusign.com/products/payments). It's implemented using an HTML-based template with [payment tabs](https://developers.docusign.com/esign-rest-api/guides/concepts/tabs/payment). The document also includes different tab types, such as [Formula](https://developers.docusign.com/esign-rest-api/guides/concepts/tabs) and
+   The example shows how to [request payment using Docusign](https://www.docusign.com/products/payments). It's implemented using an HTML-based template with [payment tabs](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/payment/). The document also includes different tab types, such as [Formula](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/calculated-fields/) and
    [Checkbox](https://developers.docusign.com/esign-rest-api/reference/Envelopes/EnvelopeRecipientTabs/).   
 
    The document contains additional logic to calculate the total amount. At completion, the user is able to pay the calculated amount and get back to the original website.  
