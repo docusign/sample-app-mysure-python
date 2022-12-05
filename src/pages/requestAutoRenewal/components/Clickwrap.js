@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-export const ClickWrap = ({ accountId, clickwrapId, clientUserId, fullName, email, date }) => {
+export const ClickWrap = ({ accountId, clickwrapId, clientUserId }) => {
   return (
     <div className="form-group">
       {window.docuSignClick.Clickwrap.render(
@@ -9,12 +9,7 @@ export const ClickWrap = ({ accountId, clickwrapId, clientUserId, fullName, emai
           environment: process.env.REACT_APP_DS_DEMO_SERVER,
           accountId: accountId,
           clickwrapId: clickwrapId,
-          clientUserId: clientUserId,
-          documentData: {
-            fullName: fullName,
-            email: email,
-            date: date
-          }
+          clientUserId: clientUserId
         },
         "#ds-clickwrap"
       )}
@@ -25,8 +20,5 @@ export const ClickWrap = ({ accountId, clickwrapId, clientUserId, fullName, emai
 ClickWrap.propTypes = {
   accountId: PropTypes.string.isRequired,
   clickwrapId: PropTypes.string.isRequired,
-  clientUserId: PropTypes.string.isRequired,
-  fullName: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
+  clientUserId: PropTypes.string.isRequired
 };

@@ -119,7 +119,7 @@ export const SigningComplete = () => {
 
             <p>
               <a
-                href="https://developers.docusign.com/esign-rest-api/guides/concepts/embedding"
+                href="https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/embedding/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
