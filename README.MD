@@ -13,8 +13,8 @@ MySure demonstrates the following:
    * The document, based on an HTML template, is combined with Docusign AutoPlace and attachment features.  
    * The signing ceremony is implemented with embedded signing for a single signer. 
    * The DocuSign signing ceremony is initiated from your website.  
-   * Anchor text ([AutoPlace](https://support.docusign.com/en/guides/AutoPlace-New-DocuSign-Experience)) is used to position the signing fields in the document.  
-   * [Adding attachments](https://support.docusign.com/en/guides/signer-guide-signing-adding-attachments-new) enables users to add additional information to the document.
+   * Anchor text ([AutoPlace](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/auto-place/)) is used to position the signing fields in the document.  
+   * [Adding attachments](https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/documents/attachments/) enables users to add additional information to the document.
 3. **Renew an insurance policy.** [Source](./app/api/clickwrap.py)  
    This example shows how to use the Click API to create a clickwrap programmatically, render it in your UI, and and then submit it. It also tracks the submission event and, just after submission, redirects the user to the final page.  
    * [More information about Click API](https://developers.docusign.com/docs/click-api) 
@@ -65,7 +65,7 @@ MySure demonstrates the following:
     > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
 6. Navigate to [the admin demo Apps and Keys page](https://admindemo.docusign.com/authenticate?goTo=appsAndKeys), add the Redirect URI http://localhost:3000/callback and then hit save
 
-    > **Note:** You should add a dynamic content properties to your clickwrap by following this [instruction](https://developers.docusign.com/docs/click-api/click101/customize-clickwrap-fields/) before using it in the sample app.
+    > **Note:** You should add a dynamic content properties to your clickwrap by following this [instruction](https://developers.docusign.com/docs/click-api/click101/customize-elastic-template-fields/) before using it in the sample app.
 
 **Using installation scripts**
 
