@@ -1,5 +1,5 @@
 ﻿cachelib==0.4.1
-certifi==2021.10.8
+certifi==2022.12.7
 cffi==1.15.0
 chardet==4.0.0
 click==8.0.4
