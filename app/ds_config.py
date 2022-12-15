@@ -20,5 +20,3 @@ PERMISSION_SCOPES = ['signature', 'impersonation', 'click.manage']
 DS_RETURN_URL = os.environ.get('REACT_APP_DS_RETURN_URL')
 DS_AUTH_SERVER = os.environ.get('DS_AUTH_SERVER')
 DS_DEMO_SERVER = os.environ.get('REACT_APP_DS_DEMO_SERVER')
-
-CLICKWRAP_ID = os.environ.get('CLICKWRAP_ID')

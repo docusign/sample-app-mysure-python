@@ -42,7 +42,7 @@ export const About = () => {
           <p><strong>{t("APICodeExamples")}</strong><br></br>
             <a
               target="_blank"
-              href="https://developers.docusign.com/esign-rest-api/code-examples"
+              href="https://developers.docusign.com/docs/esign-rest-api/how-to/"
               rel="noopener noreferrer"
             >
               {t("APICodeExamplesLink")}
@@ -51,7 +51,7 @@ export const About = () => {
           <p><strong>{t("ESignatureDocumentation")}</strong><br></br>
             <a
               target="_blank"
-              href="https://developers.docusign.com/esign-rest-api/reference"
+              href="https://developers.docusign.com/docs/esign-rest-api/reference/"
               rel="noopener noreferrer"
             >
               {t("ESignatureDocumentationLink")}
