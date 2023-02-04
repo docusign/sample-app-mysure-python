@@ -98,10 +98,8 @@ def envelope_list():
     except TypeError:
         return jsonify(message='Invalid JSON input'), 400
 
-    user_documents = session.get('ds_documents', [])
-
     try:
-        envelopes = Envelope.list(envelope_args, user_documents, session)
+        envelopes = Envelope.list(envelope_args, session['ds_documents'], session)
     except ApiException as exc:
         return process_error(exc)
     return jsonify({'envelopes': envelopes})

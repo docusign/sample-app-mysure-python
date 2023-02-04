@@ -41,4 +41,6 @@ class SessionData:
         if not session.get('ds_documents'):
             session['ds_documents'] = [envelope_id]
         else:
-            session['ds_documents'].append(envelope_id)
+            documents = session['ds_documents']
+            documents.append(envelope_id)
+            session['ds_documents'] = documents
