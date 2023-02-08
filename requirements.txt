@@ -3,7 +3,7 @@ certifi==2022.12.7
 cffi==1.15.0
 chardet==4.0.0
 click==8.0.4
-cryptography==36.0.1
+cryptography==39.0.1
 docusign-esign==3.17.0
 Flask==1.1.2
 Flask-Cors==3.0.10
