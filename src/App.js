@@ -1,6 +1,7 @@
 import React, { Suspense, useState, useEffect } from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Layout } from "./components/Layout";
+import { Logout } from "./components/Logout";
 import { About } from "./pages/about";
 import { History } from "./pages/history";
 import { Home } from "./pages/home";
@@ -10,7 +11,6 @@ import { SubmitClaim } from "./pages/submitClaim";
 import { SigningComplete } from "./components/SigningComplete.js";
 import { logOut, getStatus } from "./api/auth";
 import { Callback } from "./components/Callback";
-import history from "./api/history";
 import LoggedUserContext from "./contexts/logged-user/logged-user.context";
 import "./assets/scss/main.scss";
 
@@ -27,24 +27,21 @@ function App() {
 
   async function handleLogOut() {
     await logOut();
-    history.push("/");
     await getStatus(setLogged, setAuthType);
   }
 
   const routes = (
-    <Switch>
-      <Route path="/history" component={History} />
-      <Route path="/about" component={About} />
-      <Route path="/byNewInsurance" component={BuyNewInsurance} />
-      <Route path="/requestAutoRenewal" component={RequestAutoRenewal} />
-      <Route path="/submitClaim" component={SubmitClaim} />
-      <Route path="/" exact component={Home} />
-      <Route path="/signing_complete" component={SigningComplete} />
-      <Route path="/callback" component={Callback} />
-      <Route path="/logout" render={() => {
-        handleLogOut();
-      }} />
-    </Switch>
+    <Routes>
+      <Route path="/history" element={<History/>} />
+      <Route path="/about" element={<About/>} />
+      <Route path="/byNewInsurance" element={<BuyNewInsurance/>} />
+      <Route path="/requestAutoRenewal" element={<RequestAutoRenewal/>} />
+      <Route path="/submitClaim" element={<SubmitClaim/>} />
+      <Route path="/" exact element={<Home/>} />
+      <Route path="/signing_complete" element={<SigningComplete/>} />
+      <Route path="/callback" element={<Callback/>} />
+      <Route path="/logout" element={<Logout handleLogOut={handleLogOut}/>} />
+    </Routes>
   );
   return (
     <Suspense fallback="">
