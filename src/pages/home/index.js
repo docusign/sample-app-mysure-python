@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image1 from "../../assets/img/img-01.svg";
 import image2 from "../../assets/img/img-02.svg";
 import image3 from "../../assets/img/img-03.svg";
@@ -9,12 +9,12 @@ import parse from "html-react-parser";
 import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
 import ModalContext from "../../contexts/modal/modal.context";
 import { checkPayment } from "../../api/auth";
-import history from "../../api/history";
 
 export const Home = () => {
   const { t } = useTranslation("Home");
   const { logged, setRedirectUrl, setShowJWTModal, authType } = useContext(LoggedUserContext);
   const { setModalShow } = useContext(ModalContext);
+  const navigate = useNavigate();
 
   function handleClick(event, redirectUrl) {
     event.preventDefault();
@@ -25,12 +25,12 @@ export const Home = () => {
   async function handlePayment(event, redirectUrl) {
     event.preventDefault()
     if (authType === "code_grant"){
-      const response = await checkPayment(setShowJWTModal)
+      const response = await checkPayment(setShowJWTModal, navigate)
       if (response.status === 200) {
-        history.push(redirectUrl);
+        navigate(redirectUrl);
       }
     } else {
-      history.push(redirectUrl);
+      navigate(redirectUrl);
     }
   }
 

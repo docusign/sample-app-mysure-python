@@ -98,11 +98,11 @@ class Envelope:
         ds_client = DsClient.get_configured_instance(access_token)
         envelope_api = EnvelopesApi(ds_client)
         file_path = envelope_api.get_document(
-            account_id, args['document_id'], args['envelope_id']
+            account_id, args['document_id'], args['envelope_id'], certificate=True
         )
         (dirname, filename) = os.path.split(file_path)
         return send_from_directory(
             directory=dirname,
-            filename=filename,
+            path=filename,
             as_attachment=True
         )
