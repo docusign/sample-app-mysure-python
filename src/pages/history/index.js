@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { List } from "./List";
 import { useTranslation } from "react-i18next";
-import * as studentsAPI from "../../api/insuranceAPI";
+import * as insuranceAPI from "../../api/insuranceAPI";
 import { download } from "../../api/download";
 
 export const History = () => {
@@ -14,7 +14,7 @@ export const History = () => {
         let date = new Date();
         date.setUTCHours(0, 0, 0, 0);
         const fromDate = date.toISOString();
-        const data = await studentsAPI.getStatus(fromDate);
+        const data = await insuranceAPI.getStatus(fromDate);
         if (data.envelopes) {
           setSubmissionsList(data.envelopes);
         }
@@ -27,7 +27,7 @@ export const History = () => {
 
   async function onClick(event) {
     try {
-      const data = await studentsAPI.getStatusDocument(
+      const data = await insuranceAPI.getStatusDocument(
         event.envelopeId,
         event.documentId
       );
