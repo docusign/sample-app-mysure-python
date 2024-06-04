@@ -1,26 +1,26 @@
 {
   "Header1": "Welcome to MySure",
   "Header2": "Self-Service Insurance Portal",
-  "Footer1": "DocuSign: It's time to agree better",
-  "Footer2": "<p>DocuSign helps organizations connect and automate how they prepare, sign, act on, and manage agreements.</p>",
+  "Footer1": "Docusign: It's time to agree better",
+  "Footer2": "<p>Docusign helps organizations connect and automate how they prepare, sign, act on, and manage agreements.</p>",
   "SandBoxButton": "Create Developer Account",
   "LearnMoreButton": "Learn More",
   "Card1": {
     "Title": "Submit a Claim",
     "Description": "Simple and quick",
-    "Features": "<h4 class='h4 card-info-list-title'>DocuSign features:</h4><ul class='custom-list'><li>Single Signer</li><li>Auto-place (anchor) positioning tabs</li><li>Data entry tabs</li><li>Sign without leaving the website</li><li>Optional signer attachments</li></ul>",
+    "Features": "<h4 class='h4 card-info-list-title'>Docusign features:</h4><ul class='custom-list'><li>Single Signer</li><li>Auto-place (anchor) positioning tabs</li><li>Data entry tabs</li><li>Sign without leaving the website</li><li>Optional signer attachments</li></ul>",
     "Button": "Get Started"
   },
   "Card2": {
     "Title": "Automatic Policy Renewal",
     "Description": "Paperless submission",
-    "Features": "<h4 class='h4 card-info-list-title'>DocuSign features:</h4><ul class='custom-list'><li>Create an elastic template<li>Embed an elastic template on your site</li></ul>",
+    "Features": "<h4 class='h4 card-info-list-title'>Docusign features:</h4><ul class='custom-list'><li>Create an elastic template<li>Embed an elastic template on your site</li></ul>",
     "Button": "Get Started"
   },
   "Card3": {
     "Title": "Buy New Insurance",
     "Description": "Auto, home or life",
-    "Features": "<h4 class='h4 card-info-list-title'>DocuSign features:</h4><ul class='custom-list'><li>Single Signer</li><li>Auto-place (anchor) positioning tabs</li><li>Data entry tabs</li><li>Sign without leaving the website</li><li>Request payment</li><li>Calculated (Formula) tabs</li></ul>",
+    "Features": "<h4 class='h4 card-info-list-title'>Docusign features:</h4><ul class='custom-list'><li>Single Signer</li><li>Auto-place (anchor) positioning tabs</li><li>Data entry tabs</li><li>Sign without leaving the website</li><li>Request payment</li><li>Calculated (Formula) tabs</li></ul>",
     "Button": "Get Started"
   }
 }
