@@ -6,7 +6,6 @@ from docusign_esign import (
     EnvelopeDefinition,
     Tabs,
     Email,
-    InitialHere,
     SignHere,
     Signer,
     Checkbox,
@@ -86,14 +85,6 @@ class DsDocument: # pylint: disable=too-many-locals
             anchor_x_offset='20'
         )
 
-        # Create an initials tab
-        initial_here = InitialHere(
-            anchor_string='/initials_1/',
-            anchor_units='pixels',
-            anchor_y_offset='10',
-            anchor_x_offset='20'
-        )
-
         # Create an email field
         email = Email(
             document_id='1',
@@ -115,7 +106,6 @@ class DsDocument: # pylint: disable=too-many-locals
         signer.tabs = Tabs(
             sign_here_tabs=[sign_here],
             email_tabs=[email],
-            initial_here_tabs=[initial_here],
             signer_attachment_tabs=[signer_attachment_tabs],
 
         )
