@@ -118,12 +118,14 @@ class DsClient:
         JWT authorization
         """
         client = cls.get_instance()
+        with open(os.environ.get('DS_PRIVATE_KEY'), 'r') as key_file:
+             private_key_content = key_file.read()
         client.host = os.environ.get('DS_AUTH_SERVER')
         host_name = os.environ.get('DS_AUTH_SERVER').split('://')[1]
         oauth_token = client.request_jwt_user_token(os.environ.get('DS_CLIENT_ID'),
                                       os.environ.get('DS_IMPERSONATED_USER_GUID'),
                                       host_name,
-                                      os.environ.get('DS_PRIVATE_KEY'),
+                                      private_key_content,
                                       TOKEN_EXPIRATION_IN_SECONDS,
                                       CODE_GRANT_SCOPES)
 
