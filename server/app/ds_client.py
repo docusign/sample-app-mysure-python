@@ -157,9 +157,9 @@ class DsClient:
                                 gateway.is_enabled == 'true']
             if payment_gateways:
                 payment_data = {
-                    'payment_display_name': payment_gateways[0].display_name,
-                    'payment_gateway': payment_gateways[0].payment_gateway,
-                    'payment_gateway_account_id': payment_gateways[0].payment_gateway_account_id
+                     'payment_display_name': os.environ.get('PAYMENT_GATEWAY_DISPLAY_NAME'),
+                     'payment_gateway': os.environ.get('PAYMENT_GATEWAY_NAME'),
+                     'payment_gateway_account_id': os.environ.get('PAYMENT_GATEWAY_ACCOUNT_ID')
                 }
                 cls.payment_gateway = payment_gateways[0]
 
