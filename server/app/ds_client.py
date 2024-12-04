@@ -118,12 +118,14 @@ class DsClient:
         JWT authorization
         """
         client = cls.get_instance()
+        with open(os.environ.get('DS_PRIVATE_KEY'), 'r') as key_file:
+             private_key_content = key_file.read()
         client.host = os.environ.get('DS_AUTH_SERVER')
         host_name = os.environ.get('DS_AUTH_SERVER').split('://')[1]
         oauth_token = client.request_jwt_user_token(os.environ.get('DS_CLIENT_ID'),
                                       os.environ.get('DS_IMPERSONATED_USER_GUID'),
                                       host_name,
-                                      os.environ.get('DS_PRIVATE_KEY'),
+                                      private_key_content,
                                       TOKEN_EXPIRATION_IN_SECONDS,
                                       CODE_GRANT_SCOPES)
 
@@ -155,9 +157,9 @@ class DsClient:
                                 gateway.is_enabled == 'true']
             if payment_gateways:
                 payment_data = {
-                    'payment_display_name': payment_gateways[0].display_name,
-                    'payment_gateway': payment_gateways[0].payment_gateway,
-                    'payment_gateway_account_id': payment_gateways[0].payment_gateway_account_id
+                     'payment_display_name': os.environ.get('PAYMENT_GATEWAY_DISPLAY_NAME'),
+                     'payment_gateway': os.environ.get('PAYMENT_GATEWAY_NAME'),
+                     'payment_gateway_account_id': os.environ.get('PAYMENT_GATEWAY_ACCOUNT_ID')
                 }
                 cls.payment_gateway = payment_gateways[0]
 

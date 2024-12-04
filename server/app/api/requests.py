@@ -1,3 +1,4 @@
+import os
 from docusign_esign import ApiException
 from flask import Blueprint, jsonify, request, session
 from flask_cors import cross_origin
@@ -62,9 +63,9 @@ def buy_new_insurance():
     envelope_args = {
         'signer_client_id': 1000,
         'ds_return_url': req_json['callback-url'],
-        'gateway_account_id': session.get('payment_gateway_account_id'),
-        'gateway_name': session.get('payment_gateway'),
-        'gateway_display_name': session.get('payment_display_name')
+        'gateway_account_id': os.environ.get('PAYMENT_GATEWAY_ACCOUNT_ID'),
+        'gateway_name': os.environ.get('PAYMENT_GATEWAY_NAME'),
+        'payment_display_name': os.environ.get('PAYMENT_GATEWAY_DISPLAY_NAME'),
     }
 
     try:

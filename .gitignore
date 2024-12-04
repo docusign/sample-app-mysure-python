@@ -1,7 +1,9 @@
 *.pyc
 .idea
+private.key
 
 .env
+
 __pycache__/
 flask_session/
 

@@ -14,7 +14,7 @@ CLICKWRAP_BASE_HOST = 'https://demo.docusign.net'
 CLICKWRAP_BASE_URI = '/clickapi/v1/accounts'
 CLICKWRAP_TIME_DELTA_IN_MINUTES = 15
 
-CODE_GRANT_SCOPES = ['signature', 'click.manage']
+CODE_GRANT_SCOPES =  ['signature', 'impersonation', 'click.manage']
 PERMISSION_SCOPES = ['signature', 'impersonation', 'click.manage']
 
 DS_RETURN_URL = os.environ.get('REACT_APP_DS_RETURN_URL')
