@@ -5,7 +5,7 @@
   "dependencies": {
     "@babel/core": "^7.26.0",
     "@testing-library/react": "^14.3.1",
-    "axios": "^1.7.7",
+    "axios": "^1.13.5",
     "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "chokidar": "^4.0.1",
