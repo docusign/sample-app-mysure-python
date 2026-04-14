@@ -5,25 +5,60 @@ import { useTranslation } from "react-i18next";
 import * as insuranceAPI from "../../api/insuranceAPI";
 import { download } from "../../api/download";
 
+const WEB_SOCKET_LINK_EVENTS = process.env.REACT_APP_WEB_SOCKET_LINK_EVENTS;
+
 export const History = () => {
   const { t } = useTranslation("History");
   const [submissionsList, setSubmissionsList] = useState([]);
 
   useEffect(() => {
-    async function getStatus() {
-      try {
-        let date = new Date();
-        date.setUTCHours(0, 0, 0, 0);
-        const fromDate = date.toISOString();
-        const data = await insuranceAPI.getStatus(fromDate);
-        if (data.envelopes) {
-          setSubmissionsList(data.envelopes);
-        }
-      } catch (error) {
-        throw error;
-      }
+    if (!WEB_SOCKET_LINK_EVENTS) {
+      return undefined;
     }
-    getStatus();
+
+    let socket;
+    let reconnectTimeout;
+    let isClosed = false;
+
+    const connect = () => {
+      if (isClosed) {
+        return;
+      }
+
+      socket = new WebSocket(WEB_SOCKET_LINK_EVENTS);
+
+      socket.onmessage = async (message) => {
+        try {
+          const payload = JSON.parse(message.data);
+          if (Array.isArray(payload.envelopes)) {
+            setSubmissionsList(payload.envelopes);
+            return;
+          }
+        } catch (error) {
+          console.error("Error parsing WebSocket message: ", error);
+        }
+      };
+
+      socket.onerror = () => {
+        socket.close();
+      };
+
+      socket.onclose = () => {
+        if (!isClosed) {
+          reconnectTimeout = setTimeout(connect, 5000);
+        }
+      };
+    };
+
+    connect();
+
+    return () => {
+      isClosed = true;
+      clearTimeout(reconnectTimeout);
+      if (socket) {
+        socket.close();
+      }
+    };
   }, []);
 
   async function onClick(event) {
@@ -66,9 +101,12 @@ export const History = () => {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th scope="col">{t("Subject")}</th>
                 <th scope="col">{t("Applicant")}</th>
+                <th scope="col">{t("Subject")}</th>
+                <th scope="col">{t("Status")}</th>
                 <th scope="col">{t("Last Updated")}</th>
+                <th scope="col" className="text-right">{t("Actions")}</th>
+                <th scope="col"> </th>
               </tr>
             </thead>
             <List list={submissionsList} onClick={onClick} />

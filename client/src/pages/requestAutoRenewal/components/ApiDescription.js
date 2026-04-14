@@ -11,10 +11,10 @@ export const ApiDescription = () => {
           <div className="card-header" id="headingOne">
             <h5 className="mb-0">
               <button
-                className="btn btn-link"
-                data-toggle="collapse"
-                data-target="#collapseOne"
-                aria-expanded="false"
+                class="btn btn-link" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#collapseOne"
+                aria-expanded="false" 
                 aria-controls="collapseOne"
               >
                 {t("ApiDecription.SeeMore")}
@@ -22,10 +22,10 @@ export const ApiDescription = () => {
             </h5>
           </div>
           <div
-            id="collapseOne"
-            className="collapse"
-            aria-labelledby="headingOne"
-            data-parent="#accordion"
+            id="collapseOne" 
+            class="collapse" 
+            aria-labelledby="headingOne" 
+            data-bs-parent="#accordion"
           >
             <div className="card-body">
               {parse(t("ApiDecription.CodeFlow"))}

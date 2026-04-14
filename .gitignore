@@ -18,3 +18,5 @@ flask_session/
 /node_modules
 /build
 client/node_modules
+
+client/build/
