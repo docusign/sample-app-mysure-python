@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import * as insuranceAPI from "../../api/insuranceAPI";
 import { download } from "../../api/download";
 
-const WEB_SOCKET_LINK_EVENTS = process.env.REACT_APP_WEB_SOCKET_LINK_EVENTS;
+const WEB_SOCKET_LINK_EVENTS = process.env.REACT_APP_WEB_SOCKET_LINK;
 
 export const History = () => {
   const { t } = useTranslation("History");

@@ -48,6 +48,7 @@ The Insurance Sample App demonstrates the following:
 * **CLICKWRAP_ID** - The ID of clickwrap with dynamic content properties
 * **DS_PRIVATE_KEY** - Private key string, source or path; for instance: /app/id_rsa
 * **REACT_APP_DS_RETURN_URL** - URL where the back end of the application is located (If you run it locally, use `http://localhost:3000`)
+* **REACT_APP_WEB_SOCKET_LINK** - Public base URL used by the Docusign Events webhook (e.g. http://localhost:5000)
 * **REACT_APP_API_BASE_URL** - URL where the front end of the application is located; will be used by Docusign to redirect back after signing ceremony (If you run it locally, use `http://localhost:5001/api`)
 * **DS_AUTH_SERVER** - The Docusign authentication server (for testing purposes, use `https://account-d.docusign.com`)
 * **REACT_APP_DS_DEMO_SERVER** - Link to the Docusign demo server (for testing purposes, use `https://demo.docusign.net`)
