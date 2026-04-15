@@ -3,7 +3,9 @@ from os import path
 
 from docusign_esign import (
     Recipients,
+    ConnectEventData,
     EnvelopeDefinition,
+    EventNotification,
     Tabs,
     Email,
     SignHere,
@@ -85,6 +87,134 @@ class DsDocument: # pylint: disable=too-many-locals
             anchor_x_offset='20'
         )
 
+        # Create a signer_attachment tab
+        signer_attachment_tabs = SignerAttachment(
+            anchor_string='/attachment/',
+            anchor_y_offset='-20',
+            anchor_units='pixels',
+            anchor_x_offset='20',
+            optional='true'
+        )
+
+        return document, signer, sign_here, signer_attachment_tabs
+
+
+    @classmethod
+    def create_claim(cls, tpl, claim, envelope_args, extensions):
+        """Creates claim document
+        Parameters:
+            tpl (str): Template path for the document
+            claim (dict): Claim information
+            envelope_args (dict): Parameters of the document
+            extensions (list): List of extension objects
+        Returns:
+            EnvelopeDefinition object that will be submitted to Docusign
+        """
+        # Render and prepare HTML
+        content_bytes = cls._render_claim_template(tpl, claim)
+
+        # Base DocuSign setup
+        document, signer, sign_here, signer_attachment_tabs = cls._create_base_envelope_objects(
+            claim, envelope_args, content_bytes
+        )
+
+        # Extensions handling
+        extension_for_email = next(
+            (ext for ext in extensions if ext["appId"].strip() in Extensions.getEmailExtensionIds()),
+            None
+        )
+        extension_for_address = Extensions.get_object_by_app_id(extensions, Extensions.getAddressExtensionId())
+
+        # Create an email field
+        for tab in (t for t in extension_for_email["tabs"] if "VerifyEmailInput" in t["tabLabel"]):
+            verification_data = Extensions.extract_verification_data(extension_for_email["appId"], tab)
+            extension_data = Extensions.get_extension_data(verification_data)
+            email = Email(
+                name=verification_data["application_name"],
+                tab_label=verification_data["tab_label"],
+                tooltip=verification_data["action_input_key"],
+                document_id='1',
+                page_number='1',
+                anchor_string='/email/',
+                anchor_units='pixels',
+                required=True,
+                value=claim['email'],
+                locked=False,
+                anchor_y_offset='-5',
+                extension_data=extension_data
+            )
+
+        # Address fields mapping
+        address_fields = {
+            "street": "VerifyPostalAddressInput[0].street1",
+            "city": "VerifyPostalAddressInput[0].locality",
+            "state": "VerifyPostalAddressInput[0].subdivision",
+            "country": "VerifyPostalAddressInput[0].countryOrRegion",
+            "zip_code": "VerifyPostalAddressInput[0].postalCode",
+        }
+
+        text_tabs = []
+        for field, label_pattern in address_fields.items():
+            for tab in (t for t in extension_for_address["tabs"] if label_pattern in t["tabLabel"]):
+                verification_data = Extensions.extract_verification_data(extension_for_address["appId"], tab)
+                extension_data = Extensions.get_extension_data(verification_data)
+                text_tabs.append(
+                    Text(
+                        name=verification_data["application_name"],
+                        tab_label=verification_data["tab_label"],
+                        tooltip=verification_data["action_input_key"],
+                        document_id="1",
+                        page_number="1",
+                        anchor_string=f"/{field}/",
+                        anchor_units="pixels",
+                        required=True,
+                        value=claim[field],
+                        locked=False,
+                        anchor_y_offset="-5",
+                        anchor_x_offset="-5",
+                        width="50",
+                        extension_data=extension_data,
+                    )
+                )
+
+        # Assign all tabs
+        signer.tabs = Tabs(
+            sign_here_tabs=[sign_here],
+            email_tabs=[email],
+            text_tabs=text_tabs,
+            signer_attachment_tabs=[signer_attachment_tabs],
+        )
+
+        # Create the top-level envelope definition and populate it
+        envelope_definition = EnvelopeDefinition(
+            email_subject='Submit a Claim',
+            documents=[document],
+            recipients=Recipients(signers=[signer]),
+            status='sent',
+            event_notification=cls._create_event_notification(envelope_args)
+        )
+
+        return envelope_definition
+
+
+    @classmethod
+    def create_claim_without_extension(cls, tpl, claim, envelope_args):
+        """Creates claim document
+        Parameters:
+            tpl (str): Template path for the document
+            claim (dict): Claim information
+            envelope_args (dict): Parameters of the document
+        Returns:
+            EnvelopeDefinition object that will be submitted to Docusign
+        """
+        # Render and prepare HTML (with style cleanup)
+        content_bytes = cls._render_claim_template(tpl, claim, remove_white_styles=True)
+
+        # Base DocuSign setup
+        document, signer, sign_here, signer_attachment_tabs = cls._create_base_envelope_objects(
+            claim, envelope_args, content_bytes
+        )
+
         # Create an email field
         email = Email(
             document_id='1',
@@ -116,7 +246,8 @@ class DsDocument: # pylint: disable=too-many-locals
             documents=[document],
             # The Recipients object takes arrays for each recipient type
             recipients=Recipients(signers=[signer]),
-            status='sent'  # Requests that the envelope be created and sent
+            status='sent',
+            event_notification=cls._create_event_notification(envelope_args)
         )
 
         return envelope_definition
@@ -314,3 +445,65 @@ class DsDocument: # pylint: disable=too-many-locals
         envelope_definition.status = 'sent'
 
         return envelope_definition
+
+    @classmethod
+    def create_with_payment_without_extension(cls, tpl, user, insurance_info, envelope_args):
+        """Create envelope with payment feature included (no extensions)"""
+        render_context = dict(
+            user_name=f"{user['first_name']} {user['last_name']}",
+            user_email=user['email'],
+            street=user['street'],
+            city=user['city'],
+            state=user['state'],
+            country=user['country'],
+            zip_code=user['zip_code'],
+            detail_1=insurance_info['detail1']['name'],
+            detail_2=insurance_info['detail2']['name'],
+            value_detail_1=insurance_info['detail1']['value'],
+            value_detail_2=insurance_info['detail2']['value']
+        )
+
+        fields_to_replace = ['street', 'city', 'country', 'state', 'zip_code', 'user_email']
+        content_bytes = cls._read_and_render_template(tpl, render_context, fields_to_replace)
+        base64_file_content = base64.b64encode(content_bytes.encode('utf-8')).decode('ascii')
+
+        envelope_definition, signer, sign_here = cls._create_common_envelope_parts(user, envelope_args, base64_file_content)
+        coverage, deductible, checkbox, trigger, discount, formula_total, formula_payment = cls._create_payment_tabs(cls.CURRENCY_MULTIPLIER, cls.DISCOUNT_PERCENT, cls.INSURANCE_RATE_PERCENT, envelope_args)
+
+        signer.tabs = Tabs(
+            sign_here_tabs=[sign_here],
+            number_tabs=[coverage, deductible],
+            formula_tabs=[formula_payment, formula_total, discount, trigger],
+            checkbox_tabs=[checkbox]
+        )
+
+        envelope_definition.recipients = Recipients(signers=[signer])
+        envelope_definition.status = 'sent'
+        return envelope_definition
+
+    @classmethod
+    def _create_event_notification(cls, envelope_args):
+        """Creates event notification object for the envelope"""
+        monitor_url = f"{envelope_args['monitor_callback_url']}/api/monitor/envelopes/status"
+
+        event_data = ConnectEventData(
+            version='restv2.1',
+            include_data=["recipients"]
+        )
+        event_notification = EventNotification(
+            url=monitor_url,
+            delivery_mode='SIM',
+            logging_enabled='true',
+            require_acknowledgment='true',
+            events=[
+                'envelope-sent',
+                'envelope-delivered',
+                'envelope-completed',
+                'envelope-declined',
+                'envelope-voided',
+                'extension-executed'
+            ],
+            event_data=event_data
+        )
+
+        return event_notification
