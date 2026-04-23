@@ -30,8 +30,8 @@ export const History = () => {
       socket.onmessage = async (message) => {
         try {
           const payload = JSON.parse(message.data);
-          if (Array.isArray(payload.envelopes)) {
-            setSubmissionsList(payload.envelopes);
+          if (Array.isArray(payload)) {
+            setSubmissionsList(payload);
             return;
           }
         } catch (error) {
@@ -39,7 +39,8 @@ export const History = () => {
         }
       };
 
-      socket.onerror = () => {
+      socket.onerror = (error) => {
+        console.error("WebSocket error: ", error);
         socket.close();
       };
 

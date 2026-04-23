@@ -2,84 +2,20 @@ import React from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
 
-const WEB_SOCKET_LINK = process.env.REACT_APP_WEB_SOCKET_LINK;
-
 const formatTimestamp = (value) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "--" : date.toISOString();
-};
-
-const buildSocketUrl = (envelopeId) => {
-  if (!WEB_SOCKET_LINK) {
-    return "";
-  }
-
-  const separator = WEB_SOCKET_LINK.includes("?") ? "&" : "?";
-  return `${WEB_SOCKET_LINK}${separator}envelopeId=${encodeURIComponent(envelopeId)}`;
 };
 
 export const ListItem = ({ item, onClick }) => {
   const { t } = useTranslation("History");
   const [open, setOpen] = React.useState(false);
   const [eventsOpen, setEventsOpen] = React.useState(false);
-  const [events, setEvents] = React.useState([]);
-  const [eventsStatus, setEventsStatus] = React.useState("idle");
   const ref = React.useRef(null);
 
   const toggle = () => setOpen(prev => !prev);
   const close = () => setOpen(false);
   const toggleEvents = () => setEventsOpen(prev => !prev);
-
-  React.useEffect(() => {
-    if (!eventsOpen) {
-      return undefined;
-    }
-
-    const socketUrl = buildSocketUrl(item.envelope_id);
-    if (!socketUrl) {
-      setEvents([]);
-      setEventsStatus("missing-config");
-      return undefined;
-    }
-
-    const socket = new WebSocket(socketUrl);
-
-    setEventsStatus("connecting");
-
-    socket.onopen = () => {
-      setEventsStatus("connected");
-    };
-
-    socket.onmessage = (message) => {
-      try {
-        const payload = JSON.parse(message.data);
-        if (Array.isArray(payload.events)) {
-          setEvents(payload.events);
-          setEventsStatus("connected");
-        }
-      } catch (error) {
-        setEvents([]);
-        setEventsStatus("error");
-      }
-    };
-
-    socket.onerror = () => {
-      setEventsStatus("error");
-    };
-
-    socket.onclose = () => {
-      setEventsStatus((currentStatus) => {
-        if (currentStatus === "error" || currentStatus === "missing-config") {
-          return currentStatus;
-        }
-        return "disconnected";
-      });
-    };
-
-    return () => {
-      socket.close();
-    };
-  }, [eventsOpen, item.envelope_id]);
 
   React.useEffect(() => {
     function handleOutside(e) {
@@ -111,16 +47,16 @@ export const ListItem = ({ item, onClick }) => {
   return (
     <>
       <tr className={`history-row ${eventsOpen ? "history-row-expanded" : ""}`}>
-        <td>{item.recipients?.signers?.[0]?.name}</td>
-        <td>{item.email_subject}</td>
+        <td>{item.signerName}</td>
+        <td>{item.subject}</td>
         <td>{item.status}</td>
-        <td>{formatTimestamp(item.status_changed_date_time)}</td>
+        <td>{formatTimestamp(item.statusTimestamp)}</td>
         <td className="text-right">
           <div className={`dropdown ${open ? "show" : ""}`} ref={ref}>
             <button
               type="button"
               className="btn btn-secondary dropdown-toggle"
-              id={`options-${item.envelope_id}`}
+              id={`options-${item.envelopeId}`}
               aria-haspopup="true"
               aria-expanded={open}
               onClick={toggle}
@@ -130,14 +66,14 @@ export const ListItem = ({ item, onClick }) => {
 
             <div
               className={`dropdown-menu dropdown-menu-right ${open ? "show" : ""}`}
-              aria-labelledby={`options-${item.envelope_id}`}
+              aria-labelledby={`options-${item.envelopeId}`}
             >
               <a
                 href="#/"
                 className="dropdown-item"
                 onClick={(e) =>
                   handleItemClick(e, {
-                    envelopeId: item.envelope_id,
+                    envelopeId: item.envelopeId,
                     documentId: "1",
                     extention: "pdf",
                     mimeType: "application/pdf"
@@ -152,7 +88,7 @@ export const ListItem = ({ item, onClick }) => {
                 className="dropdown-item"
                 onClick={(e) =>
                   handleItemClick(e, {
-                    envelopeId: item.envelope_id,
+                    envelopeId: item.envelopeId,
                     documentId: "certificate",
                     extention: "pdf",
                     mimeType: "application/pdf"
@@ -167,7 +103,7 @@ export const ListItem = ({ item, onClick }) => {
                 className="dropdown-item"
                 onClick={(e) =>
                   handleItemClick(e, {
-                    envelopeId: item.envelope_id,
+                    envelopeId: item.envelopeId,
                     documentId: "combined",
                     extention: "pdf",
                     mimeType: "application/pdf"
@@ -185,7 +121,7 @@ export const ListItem = ({ item, onClick }) => {
               type="button"
               className="history-row__toggle"
               aria-expanded={eventsOpen}
-              aria-controls={`events-${item.envelope_id}`}
+              aria-controls={`events-${item.envelopeId}`}
               onClick={toggleEvents}
             >
               <svg
@@ -204,7 +140,7 @@ export const ListItem = ({ item, onClick }) => {
       </tr>
 
       <tr
-        id={`events-${item.envelope_id}`}
+        id={`events-${item.envelopeId}`}
         className={`history-events-row ${eventsOpen ? "is-open" : ""}`}
         hidden={!eventsOpen}
       >
@@ -223,8 +159,8 @@ export const ListItem = ({ item, onClick }) => {
                 </tr>
               </thead>
               <tbody>
-                {events.length > 0 ? (
-                  events.map(event => (
+                {item?.extensionEvents?.length > 0 ? (
+                  item.extensionEvents.map(event => (
                     <tr key={event.id}>
                       <td>{event.appName}</td>
                       <td>
@@ -234,20 +170,14 @@ export const ListItem = ({ item, onClick }) => {
                           {event.verified ? "true" : "false"}
                         </span>
                       </td>
-                      <td>{event.type}</td>
+                      <td>{event.actionContract}</td>
                       <td>{formatTimestamp(event.attemptTime)}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td colSpan="4" className="history-events-table__empty">
-                      {t(
-                        eventsStatus === "missing-config"
-                          ? "EventsSocketMissingConfig"
-                          : eventsStatus === "error"
-                            ? "EventsSocketError"
-                            : "EventsLoading"
-                      )}
+                      {t("EventsLoading")}
                     </td>
                   </tr>
                 )}

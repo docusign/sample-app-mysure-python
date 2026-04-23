@@ -1,5 +1,6 @@
 import base64
 from os import path
+import re
 
 from docusign_esign import (
     Recipients,
@@ -16,24 +17,23 @@ from docusign_esign import (
     PaymentDetails,
     PaymentLineItem,
     Document,
-    SignerAttachment
+    SignerAttachment,
+    Text,
 )
 from jinja2 import Environment, BaseLoader
 
 from app.ds_config import TPL_PATH, IMG_PATH
+from app.extensions import Extensions
 
 
 class DsDocument: # pylint: disable=too-many-locals
+    CURRENCY_MULTIPLIER = 100
+    DISCOUNT_PERCENT = 5
+    INSURANCE_RATE_PERCENT = 10
+
     @classmethod
-    def create_claim(cls, tpl, claim, envelope_args):
-        """Creates claim document
-        Parameters:
-            tpl (str): Template path for the document
-            claim (dict): Claim information
-            envelope_args (dict): Parameters of the document
-        Returns:
-            EnvelopeDefinition object that will be submitted to Docusign
-        """
+    def _render_claim_template(cls, tpl, claim, remove_white_styles=False):
+        """Reads and renders the HTML claim template with claim data"""
         with open(path.join(TPL_PATH, tpl), 'r') as file:
             content_bytes = file.read()
 
@@ -41,15 +41,23 @@ class DsDocument: # pylint: disable=too-many-locals
         with open(path.join(IMG_PATH, 'logo.png'), 'rb') as file:
             img_base64_src = base64.b64encode(file.read()).decode('utf-8')
 
-        content_bytes = Environment(loader=BaseLoader).from_string(
-            content_bytes) \
-            .render(
+        if remove_white_styles:
+            # Fields that should be replaced
+            fields_to_replace = ['zip_code', 'street', 'city', 'state', 'country']
+            for field in fields_to_replace:
+                pattern = rf'<span[^>]*style="color:\s*white"[^>]*>\s*/{field}/\s*</span>'
+                replacement = f'<span class="user-info">{{{{ {field} }}}}</span>'
+                content_bytes = re.sub(pattern, replacement, content_bytes, flags=re.IGNORECASE)
+
+        # Render template with claim data
+        return Environment(loader=BaseLoader).from_string(content_bytes).render(
             first_name=claim['first_name'],
             last_name=claim['last_name'],
             email=claim['email'],
             street=claim['street'],
             city=claim['city'],
             state=claim['state'],
+            country=claim['country'],
             zip_code=claim['zip_code'],
             type=claim['type'],
             timestamp=claim['timestamp'],
@@ -57,9 +65,11 @@ class DsDocument: # pylint: disable=too-many-locals
             img_base64_src=img_base64_src
         )
 
-        base64_file_content = base64.b64encode(
-            bytes(content_bytes, 'utf-8')
-        ).decode('ascii')
+
+    @classmethod
+    def _create_base_envelope_objects(cls, claim, envelope_args, rendered_html):
+        """Creates base DocuSign objects (document, signer, and base tabs)"""
+        base64_file_content = base64.b64encode(rendered_html.encode('utf-8')).decode('ascii')
 
         # Create the document model
         document = Document(  # Create the Docusign document object
@@ -226,25 +236,17 @@ class DsDocument: # pylint: disable=too-many-locals
             locked=False,
             anchor_y_offset='-5'
         )
-        signer_attachment_tabs = SignerAttachment(
-            anchor_string='/attachment/',
-            anchor_y_offset='-20',
-            anchor_units='pixels',
-            anchor_x_offset='20',
-            optional='true'
-        )
+
         signer.tabs = Tabs(
             sign_here_tabs=[sign_here],
             email_tabs=[email],
             signer_attachment_tabs=[signer_attachment_tabs],
-
         )
 
         # Create the top-level envelope definition and populate it
         envelope_definition = EnvelopeDefinition(
             email_subject='Submit a Claim',
             documents=[document],
-            # The Recipients object takes arrays for each recipient type
             recipients=Recipients(signers=[signer]),
             status='sent',
             event_notification=cls._create_event_notification(envelope_args)
@@ -252,73 +254,30 @@ class DsDocument: # pylint: disable=too-many-locals
 
         return envelope_definition
 
-    @classmethod
-    def create_with_payment(cls, tpl, user, insurance_info, envelope_args):
-        """Create envelope with payment feature included
-        Parameters:
-            tpl (str): Template path for the document
-            user (dict}: User information
-            insurance_info (dict): Insurance information for enrollment
-            envelope_args (dict): Parameters for the envelope
-        Returns:
-            EnvelopeDefinition object that will be submitted to Docusign
-        """
-        currency_multiplier = 100
-        discount_percent = 5
-        insurance_rate_percent = 10
-
-        # Read template and fill it up
+    @staticmethod
+    def _read_and_render_template(tpl, render_context, fields_to_replace=None):
+        """Reads and renders the HTML template"""
         with open(path.join(TPL_PATH, tpl), 'r') as file:
             content_bytes = file.read()
 
         # Get base64 logo representation to paste it into the HTML file
         with open(path.join(IMG_PATH, 'logo.png'), 'rb') as file:
             img_base64_src = base64.b64encode(file.read()).decode('utf-8')
-        content_bytes = Environment(loader=BaseLoader).from_string(
-            content_bytes).render(
-                user_name=f"{user['first_name']} {user['last_name']}",
-                user_email=user['email'],
-                address=f"{user['street']}, {user['city']}, {user['state']}",
-                zip_code=user['zip_code'],
-                detail_1=insurance_info['detail1']['name'],
-                detail_2=insurance_info['detail2']['name'],
-                value_detail_1=insurance_info['detail1']['value'],
-                value_detail_2=insurance_info['detail2']['value'],
-                img_base64_src=img_base64_src
-            )
 
-        base64_file_content = base64.b64encode(
-            bytes(content_bytes, 'utf-8')
-        ).decode('ascii')
+        # Optional cleanup of unwanted inline styles
+        if fields_to_replace:
+            for field in fields_to_replace:
+                pattern = rf'<span[^>]*style="color:\s*white"[^>]*>\s*/{field}/\s*</span>'
+                replacement = f'<span class="user-info">{{{{ {field} }}}}</span>'
+                content_bytes = re.sub(pattern, replacement, content_bytes, flags=re.IGNORECASE)
 
-        # Create the envelope definition
-        envelope_definition = EnvelopeDefinition(
-            email_subject='Buy New Insurance'
-        )
+        render_context["img_base64_src"] = img_base64_src
 
-        # Create the document
-        doc1 = Document(document_base64=base64_file_content,
-                        name='Insurance order form',  # Can be different from actual file name
-                        file_extension='html',  # Source data format
-                        document_id='1'  # A label used to reference the doc
-                        )
-        envelope_definition.documents = [doc1]
+        return Environment(loader=BaseLoader).from_string(content_bytes).render(**render_context)
 
-        # Create a signer recipient to sign the document
-        signer1 = Signer(
-            email=user['email'],
-            name=f"{user['first_name']} {user['last_name']}",
-            recipient_id='1',
-            routing_order='1',
-            client_user_id=envelope_args['signer_client_id']
-        )
-        sign_here1 = SignHere(
-            anchor_string='/sn1/',
-            anchor_y_offset='10',
-            anchor_units='pixels',
-            anchor_x_offset='20',
-        )
-
+    @staticmethod
+    def _create_payment_tabs(currency_multiplier, discount_percent, insurance_rate_percent, envelope_args):
+        """Creates all payment-related tabs (number, formula, checkbox)"""
         # Create number tabs for the coverage amount and deductible
         coverage = Number(
             font='helvetica',
@@ -379,7 +338,7 @@ class DsDocument: # pylint: disable=too-many-locals
             locked='true',
         )
 
-        # Create a formula tab for the insurance price
+        # Formula tab for total price
         total = f'([l1e]-[l2e]) * {insurance_rate_percent}/100'
 
         formula_total = FormulaTab(
@@ -397,53 +356,148 @@ class DsDocument: # pylint: disable=too-many-locals
             locked='true',
         )
 
-        # Create payment line item
-        payment_line_iteml1 = PaymentLineItem(
-            name='Insurance payment',
-            description='$[l4t]',
-            amount_reference='l4t'
-        )
-
+        # Payment line item and hidden formula
+        payment_line_item = PaymentLineItem(name='Insurance payment', description='$[l4t]', amount_reference='l4t')
         payment_details = PaymentDetails(
             gateway_account_id=envelope_args['gateway_account_id'],
             currency_code='USD',
             gateway_name=envelope_args['gateway_name'],
-            line_items=[payment_line_iteml1]
+            line_items=[payment_line_item]
         )
-
-        # Create a hidden formula tab for the payment itself
         formula_payment = FormulaTab(
-            tab_label='payment',
-            formula=f'([l4t]) * {currency_multiplier}',
-            round_decimal_places='2',
-            payment_details=payment_details,
-            hidden='true',
-            required='true',
-            locked='true',
-            document_id='1',
-            page_number='1',
-            x_position='0',
-            y_position='0'
+            tab_label='payment', formula=f'([l4t]) * {currency_multiplier}',
+            round_decimal_places='2', payment_details=payment_details,
+            hidden='true', required='true', locked='true',
+            document_id='1', page_number='1', x_position='0', y_position='0'
         )
 
-        # Create tabs for the signer
-        signer1_tabs = Tabs(
-            sign_here_tabs=[sign_here1],
+
+        return coverage, deductible, checkbox, trigger, discount, formula_total, formula_payment
+
+    @staticmethod
+    def _create_common_envelope_parts(user, envelope_args, base64_file_content):
+        """Creates document, signer, and base envelope with shared logic"""
+        # Create the envelope definition
+        envelope_definition = EnvelopeDefinition(email_subject='Buy New Insurance')
+
+        # Create the document
+        doc = Document(
+            document_base64=base64_file_content,
+            name='Insurance order form',
+            file_extension='html',
+            document_id='1'
+        )
+        envelope_definition.documents = [doc]
+
+        # Create the signer recipient
+        signer = Signer(
+            email=user['email'],
+            name=f"{user['first_name']} {user['last_name']}",
+            recipient_id='1',
+            routing_order='1',
+            client_user_id=envelope_args['signer_client_id']
+        )
+
+        sign_here = SignHere(
+            anchor_string='/sn1/',
+            anchor_y_offset='10',
+            anchor_units='pixels',
+            anchor_x_offset='20',
+        )
+
+        return envelope_definition, signer, sign_here
+
+    @classmethod
+    def create_with_payment(cls, tpl, user, insurance_info, envelope_args, extensions):
+        """Create envelope with payment feature included"""
+        render_context = dict(
+            user_name=f"{user['first_name']} {user['last_name']}",
+            user_email=user['email'],
+            street=user['street'],
+            city=user['city'],
+            state=user['state'],
+            country=user['country'],
+            zip_code=user['zip_code'],
+            detail_1=insurance_info['detail1']['name'],
+            detail_2=insurance_info['detail2']['name'],
+            value_detail_1=insurance_info['detail1']['value'],
+            value_detail_2=insurance_info['detail2']['value']
+        )
+
+        content_bytes = cls._read_and_render_template(tpl, render_context)
+        base64_file_content = base64.b64encode(content_bytes.encode('utf-8')).decode('ascii')
+
+        envelope_definition, signer, sign_here = cls._create_common_envelope_parts(user, envelope_args, base64_file_content)
+        coverage, deductible, checkbox, trigger, discount, formula_total, formula_payment = cls._create_payment_tabs(cls.CURRENCY_MULTIPLIER, cls.DISCOUNT_PERCENT, cls.INSURANCE_RATE_PERCENT, envelope_args)
+
+        # Extensions logic
+        extension_for_email = next(
+            (ext for ext in extensions if ext["appId"].strip() in Extensions.getEmailExtensionIds()), None
+        )
+        extension_for_address = Extensions.get_object_by_app_id(extensions, Extensions.getAddressExtensionId())
+
+        # Email tab
+        for tab in (t for t in extension_for_email["tabs"] if "VerifyEmailInput" in t["tabLabel"]):
+            verification_data = Extensions.extract_verification_data(extension_for_email["appId"], tab)
+            extension_data = Extensions.get_extension_data(verification_data)
+            email = Email(
+                name=verification_data["application_name"],
+                tab_label=verification_data["tab_label"],
+                tooltip=verification_data["action_input_key"],
+                document_id='1',
+                page_number='1',
+                anchor_string='/user_email/',
+                anchor_units='pixels',
+                required=True,
+                value=user['email'],
+                locked=False,
+                anchor_y_offset='-5',
+                extension_data=extension_data
+            )
+
+        # Address text tabs
+        address_fields = {
+            "street": "VerifyPostalAddressInput[0].street1",
+            "city": "VerifyPostalAddressInput[0].locality",
+            "state": "VerifyPostalAddressInput[0].subdivision",
+            "country": "VerifyPostalAddressInput[0].countryOrRegion",
+            "zip_code": "VerifyPostalAddressInput[0].postalCode",
+        }
+        text_tabs = []
+        for field, label_pattern in address_fields.items():
+            for tab in (t for t in extension_for_address["tabs"] if label_pattern in t["tabLabel"]):
+                verification_data = Extensions.extract_verification_data(extension_for_address["appId"], tab)
+                extension_data = Extensions.get_extension_data(verification_data)
+                text_tabs.append(
+                    Text(
+                        name=verification_data["application_name"],
+                        tab_label=verification_data["tab_label"],
+                        tooltip=verification_data["action_input_key"],
+                        document_id="1",
+                        page_number="1",
+                        anchor_string=f"/{field}/",
+                        anchor_units="pixels",
+                        required=True,
+                        value=user[field],
+                        locked=False,
+                        anchor_y_offset="-5",
+                        anchor_x_offset="-5",
+                        width="50",
+                        extension_data=extension_data,
+                    )
+                )
+
+        signer.tabs = Tabs(
+            sign_here_tabs=[sign_here],
             number_tabs=[coverage, deductible],
-            formula_tabs=[
-                formula_payment, formula_total, discount, trigger
-            ],
+            formula_tabs=[formula_payment, formula_total, discount, trigger],
+            email_tabs=[email],
+            text_tabs=text_tabs,
             checkbox_tabs=[checkbox]
         )
-        signer1.tabs = signer1_tabs
 
-        # Add the recipients to the envelope object
-        recipients = Recipients(signers=[signer1])
-        envelope_definition.recipients = recipients
-
-        # Request that the envelope be sent by setting status to 'sent'
+        envelope_definition.recipients = Recipients(signers=[signer])
         envelope_definition.status = 'sent'
-
         return envelope_definition
 
     @classmethod

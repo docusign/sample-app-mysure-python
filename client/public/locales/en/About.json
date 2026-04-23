@@ -1,6 +1,6 @@
 {
   "Title": "Docusign Sample Application for Insurance",
-  "Description": "A sample insurance application that demonstrates some common Docusign API workflows including Docusign eSignature, Docusign Click, Docusign Payments, and real-time status.",
+  "Description": "A sample insurance application that uses both Authorization Code Grant and JSON Web Token (JWT) Grant authentication and demonstrates some common Docusign API workflows including Docusign eSignature, Docusign Click, Docusign Payments, and real-time status.",
   "SourceButton": "Source on GitHub",
   "GitHubLink": "https://github.com/docusign/sample-app-insurance-python",
   "SandboxText": "<h4>Get started with the Docusign APIs today</h4>",

@@ -60,13 +60,29 @@ The Insurance Sample App demonstrates the following:
 
 1. Download or clone this repository to your workstation in a new folder named **sample-app-insurance-python**.
 2. Navigate to that folder: **`cd sample-app-insurance-python`**
-3. Install python packages: **`pip install -r requirements.txt`**
-4. Install React dependencies using the [npm](https://www.npmjs.com/) package manager:  **npm install**
+3. Install python packages: 
+   ```shell
+   cd server
+   pip install -r requirements.txt
+   ```
+4. Install React dependencies using the [npm](https://www.npmjs.com/) package manager: 
+   ```shell
+   cd ../client
+   npm install
+   ```
 5. Update the **.env** file with the integration key and other settings.
-    > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository.
-6. Navigate to [the admin demo Apps and Keys page](https://admindemo.docusign.com/authenticate?goTo=appsAndKeys), add the Redirect URI http://localhost:3000/callback and then hit save
+    > **Note:** Protect your integration key and client secret. You should make sure that the **.env** file will not be stored in your source code repository. 
+6. Navigate to [the admin demo Apps and Keys page](https://admindemo.docusign.com/authenticate?goTo=appsAndKeys), add the Redirect URI http://localhost:3000/callback and generate your RSA key pair if you haven't already.
 
     > **Note:** You should add a dynamic content properties to your clickwrap by following this [instruction](https://developers.docusign.com/docs/click-api/click101/customize-elastic-template-fields/) before using it in the sample app.
+
+7. Update the **private.key** file with your private RSA key.
+8. Copy your **.env** and your **private.key** files into the server folder
+    ```shell
+    cd ../
+    cp .env server/.env
+    cp private.key server/private.key
+    ```
 
 **Using installation scripts**
 
@@ -87,8 +103,16 @@ All installation scripts are located in the **scripts** folder.
 ### Manual
 
 1. Navigate to the application folder: **`cd sample-app-insurance-python`**
-2. Run the application: **`flask run --port 5001`**
-3. Run npm: **`npm start`**
+2. Run the application: 
+   ```shell
+   cd server
+   flask run --port 5001
+   ```
+3. Run npm: 
+   ```shell
+   cd ../client
+   npm start
+   ```
 4. Open a browser to **http://localhost:3000**
 
 ### Using installation scripts
@@ -97,6 +121,18 @@ All installation scripts are located in the **scripts** folder.
 1. Navigate to the scripts subfolder: **`cd scripts`**
 2. Run the application script: **`./run.sh`**
 3. Open a browser to **http://localhost:3000**
+
+## Installing anf running the Insurance sample app using Docker
+1. Navigate to the application folder: **`cd sample-app-insurance-python`**
+2. Install dependencies:
+   ```shell
+   docker compose build
+   ```
+3. Run the app:
+   ```shell
+   docker compose up
+   ```
+4. Open a browser to **http://localhost:80**
 
 ### Configuring a Docusign payments gateway
 Docusign offers built-in connections to multiple payment gateways. The payments example in this sample app uses a demo account for the Stripe gateway service.

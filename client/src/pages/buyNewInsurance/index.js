@@ -8,6 +8,7 @@ import { SEND_REQEUST_SUCCESS } from "./actionTypes";
 import { useTranslation } from "react-i18next";
 import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
 import { checkUnlogged } from "../../api/auth";
+import { ExtensionsModal } from "../../components/ExtensionsModal.js";
 
 const initialState = {
   errors: [],
@@ -22,20 +23,25 @@ const initialState = {
     name: "",
     value: "",
     detail1: "",
-    detail2: ""
+    detail2: "",
+    country: ""
   }
 };
 
 export const BuyNewInsurance = () => {
+  const { t: tCommon } = useTranslation("Common");
   const { t } = useTranslation("BuyNewInsurance");
   const states = t("States", { returnObjects: true });
   const options = t("Options", { returnObjects: true });
   const [option, setOption] = useState(options[0]);
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [areExtensionsPresent, setAreExtensionsPresent] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
   const [request, setRequestData] = useState({ ...initialState.request });
   const [requesting, setRequesting] = useState(false);
   const [errors, setErrors] = useState({});
   const { logged, setLogged, setAuthType, setShowJWTModal } = useContext(LoggedUserContext);
+    const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     checkUnlogged(logged, setLogged, setAuthType);
@@ -46,6 +52,9 @@ export const BuyNewInsurance = () => {
     if (!formIsValid()) {
       return;
     }
+    setLoading(true);
+
+    const useWithoutExtension = sessionStorage.getItem("useWithoutExtensions") === "true";
     const body = {
       "callback-url": process.env.REACT_APP_DS_RETURN_URL + "/signing_complete",
       user: {
@@ -55,8 +64,10 @@ export const BuyNewInsurance = () => {
         street: request.street,
         city: request.city,
         state: request.state,
-        zip_code: request.zipCode
+        zip_code: request.zipCode,
+        country: request.country
       },
+      useWithoutExtension: useWithoutExtension,
       insurance: {
         detail1: {
           name: option.detail1,
@@ -71,6 +82,15 @@ export const BuyNewInsurance = () => {
     setRequesting(true);
 
     try {
+      if (!useWithoutExtension) {
+        const extensions = await api.getExtensions();
+        if(extensions.areExtensionsPresent === false){
+          setAreExtensionsPresent(true);
+          setModalShow(true);
+          return;
+        }
+      }
+
       const savedRequest = await api.buyNewInsurance(body, setShowJWTModal);
       dispatch({
         type: SEND_REQEUST_SUCCESS,
@@ -83,6 +103,7 @@ export const BuyNewInsurance = () => {
       setErrors({ ...errors, onSave: error.message });
     } finally {
       setRequesting(false);
+      setLoading(false);
     }
   }
 
@@ -127,6 +148,7 @@ export const BuyNewInsurance = () => {
       street,
       state,
       city,
+      country,
       zipCode,
       detail1,
       detail2
@@ -153,6 +175,9 @@ export const BuyNewInsurance = () => {
     if (!zipCode) {
       errors.zipCode = t("Error.ZipCode");
     }
+    if (!country) {
+      errors.country = t("Error.Country");
+    }
     if (!detail1 || !detail2) {
       errors.insuranceDetails = t("Error.insuranceDetails");
     }
@@ -176,9 +201,29 @@ export const BuyNewInsurance = () => {
             errors={errors}
             setOption={setOption}
             options={options}
+            isLoading={isLoading}
           />
           <ApiDescription />
         </div>
+
+        {areExtensionsPresent && (
+          <ExtensionsModal
+            show={modalShow}
+            onDownloadExtensions={
+                () => {
+                setModalShow(false);
+              }
+            }
+            onHide={
+                () => {
+                sessionStorage.setItem("useWithoutExtensions", "true");
+                setModalShow(false);
+              }
+            }
+            title={tCommon("DownloadExtensionsHeader")}
+            message= {tCommon("DownloadExtensionsMessage")}
+          />
+        )}
       </section>
     );
   } else {

@@ -1,32 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>MySure: Buy New Insurance</title>
-    <meta name="description" content="See how the MySure Docusign sample application for insurance incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments.">
+    <meta name="description"
+        content="See how the Docusign Insurance Sample Application incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments.">
     <meta property="og:type" content="article" />
     <meta name="twitter:title" content="MySure: Buy New Insurance" />
-    <meta name="twitter:description" content="See how the MySure Docusign sample application for insurance incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments." />
+    <meta name="twitter:description"
+        content="See how the Docusign Insurance Sample Application incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments." />
     <meta property="og:title" content="MySure: Buy New Insurance" />
-    <meta property="og:description" content="See how the MySure Docusign sample application for insurance incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments." />
+    <meta property="og:description"
+        content="See how the Docusign Insurance Sample Application incorporates a form enabling a user to sign up for a new policy. The form uses auto-place tabs and Docusign Payments." />
     <meta property="og:image" content="https://docutest-a.akamaihd.net/devcenter/t/img/MySure.png" />
     <style>
         /*cssreset*/
-        html, body, div, span, applet, object, iframe,
-        h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-        a, abbr, acronym, address, big, cite, code,
-        del, dfn, em, img, ins, kbd, q, s, samp,
-        small, strike, strong, sub, sup, tt, var,
-        b, u, i, center,
-        dl, dt, dd, ol, ul, li,
-        fieldset, form, label, legend,
-        table, caption, tbody, tfoot, thead, tr, th, td,
-        article, aside, canvas, details, embed,
-        figure, figcaption, footer, header, hgroup,
-        menu, nav, output, ruby, section, summary,
-        time, mark, audio, video {
+        html,
+        body,
+        div,
+        span,
+        applet,
+        object,
+        iframe,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        blockquote,
+        pre,
+        a,
+        abbr,
+        acronym,
+        address,
+        big,
+        cite,
+        code,
+        del,
+        dfn,
+        em,
+        img,
+        ins,
+        kbd,
+        q,
+        s,
+        samp,
+        small,
+        strike,
+        strong,
+        sub,
+        sup,
+        tt,
+        var,
+        b,
+        u,
+        i,
+        center,
+        dl,
+        dt,
+        dd,
+        ol,
+        ul,
+        li,
+        fieldset,
+        form,
+        label,
+        legend,
+        table,
+        caption,
+        tbody,
+        tfoot,
+        thead,
+        tr,
+        th,
+        td,
+        article,
+        aside,
+        canvas,
+        details,
+        embed,
+        figure,
+        figcaption,
+        footer,
+        header,
+        hgroup,
+        menu,
+        nav,
+        output,
+        ruby,
+        section,
+        summary,
+        time,
+        mark,
+        audio,
+        video {
             margin: 0;
             padding: 0;
             border: 0;
@@ -34,25 +106,44 @@
             font: inherit;
             vertical-align: baseline;
         }
+
         /* HTML5 display-role reset for older browsers */
-        article, aside, details, figcaption, figure,
-        footer, header, hgroup, menu, nav, section {
+        article,
+        aside,
+        details,
+        figcaption,
+        figure,
+        footer,
+        header,
+        hgroup,
+        menu,
+        nav,
+        section {
             display: block;
         }
+
         body {
             line-height: 1;
         }
-        ol, ul {
+
+        ol,
+        ul {
             list-style: none;
         }
-        blockquote, q {
+
+        blockquote,
+        q {
             quotes: none;
         }
-        blockquote:before, blockquote:after,
-        q:before, q:after {
+
+        blockquote:before,
+        blockquote:after,
+        q:before,
+        q:after {
             content: '';
             content: none;
         }
+
         /*endcssreset*/
 
         body {
@@ -66,14 +157,16 @@
             border-top: 8px solid #379434;
             padding: 0 65px;
         }
-        .navbar-brand{
-            font-family:  'Noto Serif', serif;
+
+        .navbar-brand {
+            font-family: 'Noto Serif', serif;
             font-size: 32px;
             font-weight: bold;
             color: #3c3c3d;
             text-decoration: none;
 
         }
+
         .navbar-brand-image {
             background-color: #379434;
             max-width: 72px;
@@ -81,24 +174,28 @@
             display: inline-block;
             padding: 25px 16px 2px;
         }
+
         .h2 {
-            font-family:  'Noto Serif', serif;
+            font-family: 'Noto Serif', serif;
             font-size: 30px;
             font-weight: bold;
             line-height: 1.27;
             color: #585859;
             margin-bottom: 35px;
         }
+
         .content-section {
             padding: 40px 15px;
         }
+
         @media (min-width: 768px) {
             .content-section {
                 padding: 40px 65px;
             }
         }
+
         .info-title {
-            font-family:  'Noto Serif', serif;
+            font-family: 'Noto Serif', serif;
             font-size: 18px;
             font-weight: bold;
             line-height: normal;
@@ -108,6 +205,7 @@
             padding: 13px 10px;
             margin-bottom: 25px;
         }
+
         .label {
             width: 100px;
             font-size: 16px;
@@ -115,14 +213,17 @@
             padding-left: 10px;
             display: inline-block;
         }
+
         @media (min-width: 768px) {
             .label {
                 width: 200px;
             }
         }
+
         .line {
             margin-bottom: 20px;
         }
+
         hr {
             border: 0;
             border-top: 1px solid #f0f1f2;
@@ -130,6 +231,7 @@
         }
     </style>
 </head>
+
 <body class="bg-white documentForSignIn">
     <header class="header" role="banner">
         <div class="container-fluid">
@@ -153,17 +255,37 @@
                     <span class="label">Name:</span>
                     <span class="user-info">{{ user_name }}</span>
                 </div>
-                <div class="line">
-                    <span class="label">Address:</span>
-                    <span class="user-info">{{ address }}</span>
+                <h3 class="info-title">Address details</h3>
+                <div style="display: flex; justify-content: row;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; width: 45%;">
+                        <div class="line">
+                            <span class="label">Street:</span>
+                            <span style="color: white" class="user-info">/street/</span>
+                        </div>
+                        <div class="line">
+                            <span class="label">City:</span>
+                            <span style="color: white" class="user-info">/city/</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px; width: 45%;">
+                        <div class="line">
+                            <span class="label">State:</span>
+                            <span style="color: white" class="user-info">/state/</span>
+                        </div>
+                        <div class="line">
+                            <span class="label">Country:</span>
+                            <span style="color: white" class="user-info">/country/</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="line">
                     <span class="label">Zip code:</span>
-                    <span class="user-info">{{ zip_code }}</span>
+                    <span style="color: white" class="user-info">/zip_code/</span>
                 </div>
                 <div class="line">
                     <span class="label">Email address:</span>
-                    <span class="user-mail">{{ user_email }}</span>
+                    <span style="color: white" class="user-info">/user_email/</span>
                 </div>
                 <h3 class="info-title" style="margin-top:35px;">Insurance details</h3>
                 <div class="line">
@@ -202,7 +324,8 @@
             </section>
         </form>
     </main>
-<br/><br/><br/>
-<p>Use this credit card number for testing purposes - 4242-4242-4242-4242 (with any date and code).</p>
+    <br />
+    <p>Use this credit card number for testing purposes - 4242-4242-4242-4242 (with any date and code).</p>
 </body>
+
 </html>

@@ -1,9 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import parse from "html-react-parser";
+import { Collapse } from 'react-bootstrap';
 
 export const ApiDescription = () => {
   const { t } = useTranslation("RequestAutoRenewal");
+  const [open, setOpen] = React.useState(false);
   return (
     <div className="col-lg-6 pt-5 pb-4">
       <div id="accordion">
@@ -16,6 +18,7 @@ export const ApiDescription = () => {
                 data-bs-target="#collapseOne"
                 aria-expanded="false" 
                 aria-controls="collapseOne"
+                onClick={() => {setOpen(!open)}}
               >
                 {t("ApiDecription.SeeMore")}
               </button>
@@ -27,9 +30,11 @@ export const ApiDescription = () => {
             aria-labelledby="headingOne" 
             data-bs-parent="#accordion"
           >
-            <div className="card-body">
-              {parse(t("ApiDecription.CodeFlow"))}
-            </div>
+            <Collapse in={open}>
+              <div className="card-body">
+                {parse(t("ApiDecription.CodeFlow"))}
+              </div>
+            </Collapse>
           </div>
         </div>
       </div>

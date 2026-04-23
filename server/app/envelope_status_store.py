@@ -14,21 +14,21 @@ class EnvelopeStatusStore:
         envelope_id = data.get('envelope_id')
         if not data['event'].startswith('extension-'):
             record = {
-                'envelope_id': envelope_id,
+                'envelopeId': envelope_id,
                 'event': data['event'],
                 'subject': data['subject'],
                 'status': data['status'],
-                'status_timestamp': data['status_timestamp'],
-                'signer_name': data['signer_name'],
-                'extension_events': [],
+                'statusTimestamp': data['status_timestamp'],
+                'signerName': data['signer_name'],
+                'extensionEvents': [],
             }
             with self._lock:
                 if self._records.get(envelope_id):
-                    self._records[envelope_id]['envelope_id'] = envelope_id
+                    self._records[envelope_id]['envelopeId'] = envelope_id
                     self._records[envelope_id]['subject'] = data['subject']
                     self._records[envelope_id]['status'] = data['status']
-                    self._records[envelope_id]['status_timestamp'] = data['status_timestamp']
-                    self._records[envelope_id]['signer_name'] = data['signer_name']
+                    self._records[envelope_id]['statusTimestamp'] = data['status_timestamp']
+                    self._records[envelope_id]['signerName'] = data['signer_name']
                 else:
                     self._records[envelope_id] = record
         else:
@@ -36,11 +36,11 @@ class EnvelopeStatusStore:
                 'event': data['event'],
                 'actionContract': data['action_contract'],
                 'appName': data['app_name'],
-                'attempt_time': data['attempt_time'],
+                'attemptTime': data['attempt_time'],
                 'verified': data['verified'],
             }
             with self._lock:
-                self._records[envelope_id]['extension_events'].append(record)
+                self._records[envelope_id]['extensionEvents'].append(record)
         return self._records.values()
 
     def get(self, envelope_id):
