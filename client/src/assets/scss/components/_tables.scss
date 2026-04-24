@@ -1,8 +1,7 @@
 .table-holder {
-  overflow: auto;
-  @include media-breakpoint-up(lg) {
-    overflow: inherit;
-  }
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .table {
@@ -27,6 +26,50 @@
       }
 
       vertical-align: middle;
+    }
+  }
+
+  .history-table {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+
+    th,
+    td {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+      width: 22%;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+      width: 24%;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+      width: 16%;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+      width: 18%;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5) {
+      width: 16%;
+      white-space: nowrap;
+    }
+
+    th:nth-child(6),
+    td:nth-child(6) {
+      width: 4%;
+      white-space: nowrap;
     }
   }
 
@@ -80,6 +123,14 @@
 
   .history-events-table {
     min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+
+    th,
+    td {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
 
     thead {
       tr {

@@ -99,7 +99,7 @@ export const History = () => {
     <div className="row">
       <div className="col-lg-7">
         <div className="table-holder">
-          <table className="table table-striped">
+          <table className="table table-striped history-table">
             <thead>
               <tr>
                 <th scope="col">{t("Applicant")}</th>
