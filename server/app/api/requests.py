@@ -100,8 +100,6 @@ def _extract_extension_event_data(payload):
 @check_token
 def submit_claim():
     """Submit a claim"""
-    auth_type = session.get('auth_type')
-
     try:
         req_json = request.get_json(force=True)
     except TypeError:
@@ -119,10 +117,10 @@ def submit_claim():
     try:
         # Create envelope
         if useWithoutExtension == True:
-            envelope = DsDocument.create_claim_without_extension('submit-claim.html', claim, envelope_arg, auth_type)
+            envelope = DsDocument.create_claim_without_extension('submit-claim.html', claim, envelope_args)
         else:
             extensions = json.loads(session.get('extensions'))
-            envelope = DsDocument.create_claim('submit-claim.html', claim, envelope_args, extensions, auth_type)
+            envelope = DsDocument.create_claim('submit-claim.html', claim, envelope_args, extensions)
         # Submit envelope to the Docusign
         envelope_id = Envelope.send(envelope, session)
 
