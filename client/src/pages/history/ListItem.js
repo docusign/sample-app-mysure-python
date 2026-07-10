@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useTranslation } from "react-i18next";
+import LoggedUserContext from "../../contexts/logged-user/logged-user.context";
 
 const formatTimestamp = (value) => {
   const date = new Date(value);
@@ -9,6 +10,7 @@ const formatTimestamp = (value) => {
 
 export const ListItem = ({ item, onClick }) => {
   const { t } = useTranslation("History");
+  const { authType } = React.useContext(LoggedUserContext);
   const [open, setOpen] = React.useState(false);
   const [eventsOpen, setEventsOpen] = React.useState(false);
   const ref = React.useRef(null);
@@ -116,26 +118,28 @@ export const ListItem = ({ item, onClick }) => {
           </div>
         </td>
         <td className="text-right">
-          <div className="history-row__actions">
-            <button
-              type="button"
-              className="history-row__toggle"
-              aria-expanded={eventsOpen}
-              aria-controls={`events-${item.envelopeId}`}
-              onClick={toggleEvents}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="bi bi-caret-down-fill"
-                viewBox="0 0 16 16"
+          {authType === "jwt" && (
+            <div className="history-row__actions">
+              <button
+                type="button"
+                className="history-row__toggle"
+                aria-expanded={eventsOpen}
+                aria-controls={`events-${item.envelopeId}`}
+                onClick={toggleEvents}
               >
-                <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
-              </svg>
-            </button>
-          </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  className="bi bi-caret-down-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                </svg>
+              </button>
+            </div>
+          )}
         </td>
       </tr>
 
