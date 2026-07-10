@@ -110,7 +110,7 @@ class DsDocument: # pylint: disable=too-many-locals
 
 
     @classmethod
-    def create_claim(cls, tpl, claim, envelope_args, extensions):
+    def create_claim(cls, tpl, claim, envelope_args, extensions, auth_type):
         """Creates claim document
         Parameters:
             tpl (str): Template path for the document
@@ -201,14 +201,14 @@ class DsDocument: # pylint: disable=too-many-locals
             documents=[document],
             recipients=Recipients(signers=[signer]),
             status='sent',
-            event_notification=cls._create_event_notification(envelope_args)
+            event_notification=cls._create_event_notification(envelope_args, auth_type)
         )
 
         return envelope_definition
 
 
     @classmethod
-    def create_claim_without_extension(cls, tpl, claim, envelope_args):
+    def create_claim_without_extension(cls, tpl, claim, envelope_args, auth_type):
         """Creates claim document
         Parameters:
             tpl (str): Template path for the document
@@ -249,7 +249,7 @@ class DsDocument: # pylint: disable=too-many-locals
             documents=[document],
             recipients=Recipients(signers=[signer]),
             status='sent',
-            event_notification=cls._create_event_notification(envelope_args)
+            event_notification=cls._create_event_notification(envelope_args, auth_type)
         )
 
         return envelope_definition
@@ -536,7 +536,7 @@ class DsDocument: # pylint: disable=too-many-locals
         return envelope_definition
 
     @classmethod
-    def _create_event_notification(cls, envelope_args):
+    def _create_event_notification(cls, envelope_args, auth_type):
         """Creates event notification object for the envelope"""
         monitor_url = f"{envelope_args['monitor_callback_url']}/api/monitor/envelopes/status"
 
@@ -555,9 +555,11 @@ class DsDocument: # pylint: disable=too-many-locals
                 'envelope-completed',
                 'envelope-declined',
                 'envelope-voided',
-                'extension-executed'
             ],
             event_data=event_data
         )
+
+        if auth_type == 'jwt':
+            event_notification.events.append('extension-executed')  # Add envelope-sent event for JWT auth
 
         return event_notification
