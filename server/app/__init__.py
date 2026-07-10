@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask_session import Session
 
 from app.api import clickwrap, requests, common, auth
+from app.socket import init_realtime
 
 load_dotenv()
 
@@ -27,5 +28,7 @@ app.register_blueprint(clickwrap, url_prefix=URL_PREFIX)
 app.register_blueprint(common, url_prefix=URL_PREFIX)
 app.register_blueprint(requests, url_prefix=URL_PREFIX)
 app.register_blueprint(auth, url_prefix=URL_PREFIX)
+
+init_realtime(app)
 
 cors = CORS(app)

@@ -4,7 +4,9 @@ import re
 
 from docusign_esign import (
     Recipients,
+    ConnectEventData,
     EnvelopeDefinition,
+    EventNotification,
     Tabs,
     Email,
     SignHere,
@@ -198,7 +200,8 @@ class DsDocument: # pylint: disable=too-many-locals
             email_subject='Submit a Claim',
             documents=[document],
             recipients=Recipients(signers=[signer]),
-            status='sent'
+            status='sent',
+            event_notification=cls._create_event_notification(envelope_args)
         )
 
         return envelope_definition
@@ -245,7 +248,8 @@ class DsDocument: # pylint: disable=too-many-locals
             email_subject='Submit a Claim',
             documents=[document],
             recipients=Recipients(signers=[signer]),
-            status='sent'
+            status='sent',
+            event_notification=cls._create_event_notification(envelope_args)
         )
 
         return envelope_definition
@@ -531,3 +535,28 @@ class DsDocument: # pylint: disable=too-many-locals
         envelope_definition.status = 'sent'
         return envelope_definition
 
+    @classmethod
+    def _create_event_notification(cls, envelope_args):
+        """Creates event notification object for the envelope"""
+        monitor_url = f"{envelope_args['monitor_callback_url']}/api/monitor/envelopes/status"
+
+        event_data = ConnectEventData(
+            version='restv2.1',
+            include_data=["recipients"]
+        )
+        event_notification = EventNotification(
+            url=monitor_url,
+            delivery_mode='SIM',
+            logging_enabled='true',
+            require_acknowledgment='true',
+            events=[
+                'envelope-sent',
+                'envelope-delivered',
+                'envelope-completed',
+                'envelope-declined',
+                'envelope-voided',
+            ],
+            event_data=event_data
+        )
+
+        return event_notification
